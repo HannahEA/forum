@@ -33,7 +33,7 @@ func main() {
 		CREATE TABLE IF NOT EXISTS "users" (
 			"ID"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 			"email" 	TEXT UNIQUE,
-			"username"	TEXT,
+			"username"	TEXT UNIQUE,
 			"password"	TEXT 
 		);
 	`)
@@ -47,12 +47,12 @@ func main() {
 
 	//Create the posts table
 	postsTbl, errPosts := sqliteDatabase.Prepare(`
-	CREATE TABLE IF NOT EXSISTS "posts" (
+	CREATE TABLE IF NOT EXISTS "posts" (
 		"postNum"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		"userID"	INTEGER,
 		"category"	TEXT,
 		"likes" INTEGER,
-		"dislikes" INTEGER,
+		"dislikes" INTEGER
 		);
 	`)
 
@@ -91,7 +91,7 @@ func newPost(userID int, category string, db *sql.DB) {
 }
 
 //userExsists checks if the username entered is already taken. If it is the function returns true.
-func userExsist(email string, db *sql.DB) bool {
+func userExist(email, username string, db *sql.DB) bool {
 	rows, err := db.Query("SELECT email FROM users WHERE email = ?", email)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -102,5 +102,20 @@ func userExsist(email string, db *sql.DB) bool {
 		count++
 	}
 
-	return count != 0
+	rows1, err1 := db.Query("SELECT username FROM users WHERE username = ?", username)
+	if err1 != nil {
+		log.Fatal(err.Error())
+	}
+
+	count1 := 0
+	for rows1.Next() {
+		count1++
+	}
+
+
+	if count1 == 0 && count == 0 {
+		return false
+	} else {
+		return true
+	}
 }
