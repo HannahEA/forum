@@ -32,7 +32,8 @@ func main() {
 	usersTbl, errTbl := sqliteDatabase.Prepare(`
 		CREATE TABLE IF NOT EXISTS "users" (
 			"ID"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-			"username" 	TEXT UNIQUE,
+			"email" 	TEXT UNIQUE,
+			"username"	TEXT,
 			"password"	TEXT 
 		);
 	`)
@@ -44,31 +45,54 @@ func main() {
 
 	usersTbl.Exec()
 
-	newUser("nater6", "HElloWorld", sqliteDatabase)
+	//Create the posts table
+	postsTbl, errPosts := sqliteDatabase.Prepare(`
+	CREATE TABLE IF NOT EXSISTS "posts" (
+		"postNum"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		"userID"	INTEGER,
+		"category"	TEXT,
+		"likes" INTEGER,
+		"dislikes" INTEGER,
+		);
+	`)
 
-	fmt.Println(userExsist("nater68", sqliteDatabase))
-	newUser("nater68", "HElloWorld", sqliteDatabase)
+	if errPosts != nil {
+		fmt.Println("POST ERROR")
+		log.Fatal(errPosts.Error())
+	}
+
+	postsTbl.Exec()
 
 }
 
-/*newUser adds a new account with a unique username and password to the database.
-
- */
-func newUser(username, password string, db *sql.DB) {
-	add, errNewUser := db.Prepare("INSERT INTO users (username, password) VALUES (?, ?)")
+//newUser adds a new account with a unique username and password to the database.
+func newUser(email, username, password string, db *sql.DB) {
+	add, errNewUser := db.Prepare("INSERT INTO users (email, username, password) VALUES (?, ?, ?)")
 	if errNewUser != nil {
 		log.Fatal()
 	}
 
-	_, preAdded := add.Exec(username, password)
+	_, preAdded := add.Exec(email, username, password)
 	if preAdded != nil {
 		log.Fatal(preAdded.Error())
 	}
 }
 
+//newPost creates a new post by a registered user
+func newPost(userID int, category string, db *sql.DB) {
+	add, err := db.Prepare("INSERT INTO posts (userID, category, likes, dislikes) VALUES (?,?, 0,0)")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	_, errPost := add.Exec(userID, category)
+	if errPost != nil {
+		log.Fatal(err.Error())
+	}
+}
+
 //userExsists checks if the username entered is already taken. If it is the function returns true.
-func userExsist(username string, db *sql.DB) bool {
-	rows, err := db.Query("SELECT username FROM users WHERE username = ?", username)
+func userExsist(email string, db *sql.DB) bool {
+	rows, err := db.Query("SELECT email FROM users WHERE email = ?", email)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -78,5 +102,5 @@ func userExsist(username string, db *sql.DB) bool {
 		count++
 	}
 
-	return count != 0 
+	return count != 0
 }
