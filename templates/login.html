@@ -2,20 +2,15 @@
 <html>
 
 <head>
-    <title>Register</title>
+    <title>Login</title>
 </head>
 
 <body>
-    <form method="POST" action="/registration">
-        <h1>Register</h1>
+    <form method="POST" action="/register">
+        <h1>Login</h1>
         <div>
             <label for="email">Enter your email:</label>
             <input type="email" id="email" name="email" required>
-        </div>
-        <br>
-        <div>
-            <label for="username">Enter your username:</label>
-            <input type="text" id="username" name="username" required>
         </div>
         <br>
         <div>
@@ -26,7 +21,13 @@
         <div>
             <input type="submit" id="submit" value="Submit">
         </div>
-    </form>
+        </form>
+
+        <div>
+            <p>New User?</p>
+            <a href="http://localhost:8080/register">Register Here</a>
+        </div>
+    
 </body>
 
 </html>
