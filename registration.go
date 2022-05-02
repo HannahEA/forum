@@ -6,10 +6,28 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
+type userDetails struct {
+	ID       int
+	email    string
+	username string
+	password string
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
 func newUser(email, username, password string, db *sql.DB) {
-	_, errNewUser := db.Exec("INSERT INTO users (email, username, password) VALUES (?, ?, ?)", email, username, password)
+	hash, err := HashPassword(password)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	_, errNewUser := db.Exec("INSERT INTO users (email, username, password) VALUES (?, ?, ?)", email, username, hash)
 	if errNewUser != nil {
 		fmt.Printf("The error is %v", errNewUser.Error())
 		log.Fatal()
@@ -69,21 +87,30 @@ func ValidEmail(email string, db *sql.DB) bool {
 }
 
 func LoginValidator(email, password string, db *sql.DB) bool {
-	rows1, err1 := db.Query("SELECT username FROM users WHERE email = ? AND password = ?", email, password)
+	rows1, err1 := db.Query("SELECT ID, email, username, password FROM users WHERE email = ?", email)
+
 	if err1 != nil {
 		log.Fatal(err1.Error())
 	}
 
-	x := 0
-	for rows1.Next() {
-		x++
+	var u userDetails
+
+	err := rows1.Scan(
+		&u.ID,
+		&u.email,
+		&u.username,
+		&u.password,
+	)
+
+	if err != nil {
+		fmt.Println("SCANNING ERROR")
+		log.Fatal(err.Error())
 	}
 
-	if x != 0 {
-		return true
-	} else {
-		return false
-	}
+	hashErr := bcrypt.CompareHashAndPassword([]byte(u.password), []byte(password))
+
+	return hashErr == nil
+
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -102,11 +129,9 @@ func registration(w http.ResponseWriter, r *http.Request) {
 
 func registration2(w http.ResponseWriter, r *http.Request) {
 
-
 	userN := r.FormValue("username")
 	email := r.FormValue("email")
 	pass := r.FormValue("password")
-
 
 	exist, value := userExist(email, userN, sqliteDatabase)
 
