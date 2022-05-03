@@ -24,9 +24,10 @@ func main() {
 	defer sqliteDatabase.Close()
 
 	fmt.Println(LoginValidator("helld@hotmail.com", "rew", sqliteDatabase))
-	fmt.Println(LoginValidator("helld@hotil.com", "HelloW", sqliteDatabase))
+	fmt.Println(LoginValidator("test@1", "Hello", sqliteDatabase))
 
 	http.HandleFunc("/", LoginHandler)
+	http.HandleFunc("/login", LoginResult )
 	http.HandleFunc("/register", registration)
 	http.HandleFunc("/registration", registration2)
 	http.ListenAndServe(":8080", nil)

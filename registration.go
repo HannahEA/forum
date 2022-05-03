@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"net/http"
-	"text/template"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -17,11 +15,9 @@ type userDetails struct {
 	password string
 }
 
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
-}
 
+
+//newUser registers a new user to the database selected
 func newUser(email, username, password string, db *sql.DB) {
 	hash, err := HashPassword(password)
 	if err != nil {
@@ -68,6 +64,8 @@ func userExist(email, username string, db *sql.DB) (bool, string) {
 	}
 }
 
+
+//ValidEmail checks if the email entered exists in the database
 func ValidEmail(email string, db *sql.DB) bool {
 	rows, err := db.Query("SELECT email FROM users WHERE email = ?", email)
 	if err != nil {
@@ -86,6 +84,8 @@ func ValidEmail(email string, db *sql.DB) bool {
 	}
 }
 
+
+//LoginValidaro checks if the email and passwords entered are the same
 func LoginValidator(email, password string, db *sql.DB) bool {
 	rows1, err1 := db.Query("SELECT ID, email, username, password FROM users WHERE email = ?", email)
 
@@ -95,16 +95,18 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 
 	var u userDetails
 
-	err := rows1.Scan(
-		&u.ID,
-		&u.email,
-		&u.username,
-		&u.password,
-	)
+	for rows1.Next() {
+		err := rows1.Scan(
+			&u.ID,
+			&u.email,
+			&u.username,
+			&u.password,
+		)
 
-	if err != nil {
-		fmt.Println("SCANNING ERROR")
-		log.Fatal(err.Error())
+		if err != nil {
+			fmt.Println("SCANNING ERROR")
+			log.Fatal(err.Error())
+		}
 	}
 
 	hashErr := bcrypt.CompareHashAndPassword([]byte(u.password), []byte(password))
@@ -113,42 +115,8 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 
 }
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	tpl := template.Must(template.ParseGlob("templates/login.html"))
-	if err := tpl.Execute(w, ""); err != nil {
-		log.Fatal(err.Error())
-	}
-}
-
-func registration(w http.ResponseWriter, r *http.Request) {
-	tpl := template.Must(template.ParseGlob("templates/register.html"))
-	if err := tpl.Execute(w, ""); err != nil {
-		log.Fatal(err.Error())
-	}
-}
-
-func registration2(w http.ResponseWriter, r *http.Request) {
-
-	userN := r.FormValue("username")
-	email := r.FormValue("email")
-	pass := r.FormValue("password")
-
-	exist, value := userExist(email, userN, sqliteDatabase)
-
-	tpl := template.Must(template.ParseGlob("templates/register2.html"))
-
-	if !exist {
-		if err := tpl.Execute(w, value); err != nil {
-			log.Fatal(err.Error())
-		}
-	} else {
-
-		newUser(email, userN, pass, sqliteDatabase)
-
-		if err := tpl.Execute(w, value); err != nil {
-			log.Fatal(err.Error())
-		}
-
-	}
-
+//HashPassword encrypts the password entered when registering
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
 }
