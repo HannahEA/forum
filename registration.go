@@ -10,9 +10,10 @@ import (
 
 type userDetails struct {
 	ID       int
-	email    string
-	username string
-	password string
+	Email    string
+	Username string
+	Password string
+	Accesslevel bool
 }
 
 
@@ -93,14 +94,15 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 		log.Fatal(err1.Error())
 	}
 
-	var u userDetails
+	
 
+	var u userDetails
 	for rows1.Next() {
 		err := rows1.Scan(
 			&u.ID,
-			&u.email,
-			&u.username,
-			&u.password,
+			&u.Email,
+			&u.Username,
+			&u.Password,
 		)
 
 		if err != nil {
@@ -109,7 +111,15 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 		}
 	}
 
-	hashErr := bcrypt.CompareHashAndPassword([]byte(u.password), []byte(password))
+	hashErr := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+
+	if hashErr == nil {
+		Person.ID= u.ID
+		Person.Email = u.Email
+		Person.Username = u.Username
+		Person.Password = u.Password
+		Person.Accesslevel = true
+	}
 
 	return hashErr == nil
 

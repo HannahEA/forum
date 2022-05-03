@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -10,6 +9,7 @@ import (
 )
 
 var sqliteDatabase *sql.DB
+var Person userDetails
 
 func main() {
 
@@ -23,11 +23,9 @@ func main() {
 	//Defer the close
 	defer sqliteDatabase.Close()
 
-	fmt.Println(LoginValidator("helld@hotmail.com", "rew", sqliteDatabase))
-	fmt.Println(LoginValidator("test@1", "Hello", sqliteDatabase))
-
-	http.HandleFunc("/", LoginHandler)
-	http.HandleFunc("/login", LoginResult )
+	http.HandleFunc("/", Home)
+	http.HandleFunc("/log", LoginHandler)
+	http.HandleFunc("/login", LoginResult)
 	http.HandleFunc("/register", registration)
 	http.HandleFunc("/registration", registration2)
 	http.ListenAndServe(":8080", nil)
