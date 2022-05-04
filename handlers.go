@@ -47,7 +47,7 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 	if ValidEmail(email, sqliteDatabase) {
 		if LoginValidator(email, pass, sqliteDatabase) {
 			tpl := template.Must(template.ParseGlob("templates/homepage.html"))
-			if err := tpl.Execute(w, ""); err != nil {
+			if err := tpl.Execute(w, Person); err != nil {
 				log.Fatal(err.Error())
 			}
 		} else {
@@ -75,8 +75,21 @@ func registration(w http.ResponseWriter, r *http.Request) {
 func Home(w http.ResponseWriter, r *http.Request) {
 	tpl := template.Must(template.ParseGlob("templates/homepage.html"))
 	p := Person
-	fmt.Println(p)
+	// fmt.Println(p)
 	if err := tpl.Execute(w, p); err != nil {
+		log.Fatal(err.Error())
+	}
+}
+
+func LogOut(w http.ResponseWriter, r *http.Request) {
+
+	var newPerson userDetails
+	Person = newPerson
+	fmt.Println(Person)
+	
+	tpl := template.Must(template.ParseGlob("templates/logout.html"))
+
+	if err := tpl.Execute(w, ""); err != nil {
 		log.Fatal(err.Error())
 	}
 }
