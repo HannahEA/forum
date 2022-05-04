@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"text/template"
@@ -56,11 +57,11 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-	} else{
+	} else {
 		tpl := template.Must(template.ParseGlob("templates/login2.html"))
-			if err := tpl.Execute(w, "Email not recognised"); err != nil {
-				log.Fatal(err.Error())
-			}
+		if err := tpl.Execute(w, "Email not recognised"); err != nil {
+			log.Fatal(err.Error())
+		}
 	}
 }
 
@@ -74,6 +75,7 @@ func registration(w http.ResponseWriter, r *http.Request) {
 func Home(w http.ResponseWriter, r *http.Request) {
 	tpl := template.Must(template.ParseGlob("templates/homepage.html"))
 	p := Person
+	fmt.Println(p)
 	if err := tpl.Execute(w, p); err != nil {
 		log.Fatal(err.Error())
 	}
