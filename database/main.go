@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -28,7 +29,7 @@ func main() {
 	//Create the database for each user
 	_, errTbl := sqliteDatabase.Exec(`
 		CREATE TABLE IF NOT EXISTS "users" (
-			"ID"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			"ID"	TEXT,
 			"email" 	TEXT UNIQUE,
 			"username"	TEXT UNIQUE,
 			"password"	TEXT 

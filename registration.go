@@ -6,17 +6,16 @@ import (
 	"log"
 
 	"golang.org/x/crypto/bcrypt"
+	"github.com/satori/go.uuid"
 )
 
 type userDetails struct {
-	ID       int
-	Email    string
-	Username string
-	Password string
+	ID          string
+	Email       string
+	Username    string
+	Password    string
 	Accesslevel bool
 }
-
-
 
 //newUser registers a new user to the database selected
 func newUser(email, username, password string, db *sql.DB) {
@@ -24,7 +23,9 @@ func newUser(email, username, password string, db *sql.DB) {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	_, errNewUser := db.Exec("INSERT INTO users (email, username, password) VALUES (?, ?, ?)", email, username, hash)
+
+	u1 := uuid.NewV4()
+	_, errNewUser := db.Exec("INSERT INTO users (ID, email, username, password) VALUES (?, ?, ?, ?)",u1, email, username, hash)
 	if errNewUser != nil {
 		fmt.Printf("The error is %v", errNewUser.Error())
 		log.Fatal()
@@ -65,7 +66,6 @@ func userExist(email, username string, db *sql.DB) (bool, string) {
 	}
 }
 
-
 //ValidEmail checks if the email entered exists in the database
 func ValidEmail(email string, db *sql.DB) bool {
 	rows, err := db.Query("SELECT email FROM users WHERE email = ?", email)
@@ -85,7 +85,6 @@ func ValidEmail(email string, db *sql.DB) bool {
 	}
 }
 
-
 //LoginValidaro checks if the email and passwords entered are the same
 func LoginValidator(email, password string, db *sql.DB) bool {
 	rows1, err1 := db.Query("SELECT ID, email, username, password FROM users WHERE email = ?", email)
@@ -93,8 +92,6 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 	if err1 != nil {
 		log.Fatal(err1.Error())
 	}
-
-	
 
 	var u userDetails
 	for rows1.Next() {
@@ -114,7 +111,7 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 	hashErr := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 
 	if hashErr == nil {
-		Person.ID= u.ID
+		Person.ID = u.ID
 		Person.Email = u.Email
 		Person.Username = u.Username
 		Person.Password = u.Password
