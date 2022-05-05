@@ -5,7 +5,8 @@ import (
 	"log"
 	"net/http"
 	"text/template"
-	"github.com/satori/go.uuid"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 // type Cookie struct {
@@ -62,22 +63,24 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 func LoginResult(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	pass := r.FormValue("password")
+	uuid := uuid.NewV4()
 
 	if ValidEmail(email, sqliteDatabase) {
 		if LoginValidator(email, pass, sqliteDatabase) {
 			//Create the cookie
+
 			if Person.Accesslevel {
-				id := uuid.NewV4()
+
 				cookie, err := r.Cookie("1st-cookie")
 				fmt.Println("cookie:", cookie, "err:", err)
 				if err != nil {
 					fmt.Println("cookie was not found")
 					cookie = &http.Cookie{
 						Name:     "1st-cookie",
-						Value:   id.String(),
+						Value:    uuid.String(),
 						HttpOnly: true,
 						// MaxAge:   1000,
-						Path:     "/",
+						Path: "/",
 					}
 					http.SetCookie(w, cookie)
 				}
@@ -129,7 +132,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("user not logged in.")
 	}
-	
+
 	fmt.Println("YOUR COOKIE:", c)
 
 	tpl := template.Must(template.ParseGlob("templates/homepage.html"))

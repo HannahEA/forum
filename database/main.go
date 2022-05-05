@@ -58,4 +58,17 @@ func main() {
 		fmt.Println("POST ERROR")
 		log.Fatal(errPosts.Error())
 	}
+
+	//Create the cookies table 
+	_, errCookie := sqliteDatabase.Exec(`
+		CREATE TABLE IF NOT EXISTS "cookies" (
+			"name"	TEXT,
+			"sessionID" 	TEXT UNIQUE,
+		);
+	`)
+
+	if errCookie != nil {
+		fmt.Println("TABLE ERROR")
+		log.Fatal(errTbl.Error())
+	}
 }
