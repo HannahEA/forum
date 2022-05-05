@@ -9,23 +9,19 @@
 </head>
 
 <body>
-    {{if .CookieChecker}}
-
-    {{else}}
     <div>
+        {{if .CookieChecker}}
         <a href="/">Home</a>
-        {{if .Accesslevel}}
-        
         <a href="/logout">Log Out</a>
         {{else}}
+        <a href="/">Home</a>
         <a href="/log">Login</a>
         <a href="/register">Register</a>
         {{end}}
 
         <input type="button" id="submit" value="Submit">
-       
+
     </div>
-    {{end}}
 </body>
 
 </html>

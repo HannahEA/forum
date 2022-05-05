@@ -57,12 +57,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	if Person.Accesslevel {
 		Executer(w, "templates/accessDenied.html")
-	} else{
-	tpl := template.Must(template.ParseGlob("templates/login.html"))
-	if err := tpl.Execute(w, ""); err != nil {
-		log.Fatal(err.Error())
+	} else {
+		tpl := template.Must(template.ParseGlob("templates/login.html"))
+		if err := tpl.Execute(w, ""); err != nil {
+			log.Fatal(err.Error())
+		}
 	}
-}
 }
 
 func LoginResult(w http.ResponseWriter, r *http.Request) {
@@ -92,6 +92,7 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 				}
 				// CookieAdd(cookie, sqliteDatabase)
 			}
+			Person.CookieChecker = true
 
 			tpl := template.Must(template.ParseGlob("templates/homepage.html"))
 			if err := tpl.Execute(w, Person); err != nil {
@@ -136,25 +137,35 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	// }
 	// r.Cookie("1st-cookie").MaxAge = -1
 
+	c1, err1 := r.Cookie("1st-cookie")
+
+	if err1 == nil && !Person.Accesslevel {
+		c1.MaxAge = -1
+		http.SetCookie(w, c1)
+	}
+
 	c, err := r.Cookie("1st-cookie")
 
-	if err == nil && !Person.Accesslevel {
-		c.MaxAge = -1
-		http.SetCookie(w, c)
-	} else if err != nil && Person.Accesslevel {
-		Executer(w, "templates/homepage2.html")
+	if err != nil && Person.Accesslevel {
+		//logged in and on 2nd browser
+		Person.CookieChecker = false
+		
+	} else if err == nil && Person.Accesslevel {
+		//Original browser
+		Person.CookieChecker = true
+		
 	} else {
-		tpl := template.Must(template.ParseGlob("templates/homepage.html"))
-	p := Person
-	// fmt.Println(p)
-	if err := tpl.Execute(w, p); err != nil {
-		log.Fatal(err.Error())
+		// not logged in yet
+		Person.CookieChecker = false
 	}
-	}
+	tpl := template.Must(template.ParseGlob("templates/homepage.html"))
+		p := Person
+		// fmt.Println(p)
+		if err := tpl.Execute(w, p); err != nil {
+			log.Fatal(err.Error())
+		}
 	fmt.Println("YOUR COOKIE:", c)
 
-
-	
 }
 
 func LogOut(w http.ResponseWriter, r *http.Request) {
