@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	file, err := os.Create("database/sqlite-database.db")
+	file, err := os.Create("sqlite-database.db")
 
 	if err != nil {
 		log.Fatal(err.Error())
@@ -19,7 +19,7 @@ func main() {
 	fmt.Println("SQL Databasefile created")
 
 	//Open the database SQLite file and create the database table
-	sqliteDatabase, err1 := sql.Open("sqlite3", "database/sqlite-database.db")
+	sqliteDatabase, err1 := sql.Open("sqlite3", "sqlite-database.db")
 	if err1 != nil {
 		log.Fatal(err1.Error())
 	}
@@ -37,7 +37,7 @@ func main() {
 	`)
 
 	if errTbl != nil {
-		fmt.Println("TABLE ERROR")
+		fmt.Println("USER ERROR")
 		log.Fatal(errTbl.Error())
 	}
 
@@ -47,7 +47,7 @@ func main() {
 	_, errPosts := sqliteDatabase.Exec(`
 		CREATE TABLE IF NOT EXISTS "posts" (
 			"postNum"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-			"userID"	INTEGER,
+			"userID"	TEXT NOT NULL,
 			"category"	TEXT,
 			"likes" INTEGER,
 			"dislikes" INTEGER
@@ -59,11 +59,11 @@ func main() {
 		log.Fatal(errPosts.Error())
 	}
 
-	//Create the cookies table 
+	//Create the cookies table
 	_, errCookie := sqliteDatabase.Exec(`
 		CREATE TABLE IF NOT EXISTS "cookies" (
 			"name"	TEXT,
-			"sessionID" 	TEXT UNIQUE,
+			"sessionID" 	TEXT UNIQUE
 		);
 	`)
 

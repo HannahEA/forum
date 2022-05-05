@@ -4,9 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"net/http"
 
+	uuid "github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
-	"github.com/satori/go.uuid"
 )
 
 type userDetails struct {
@@ -15,6 +16,7 @@ type userDetails struct {
 	Username    string
 	Password    string
 	Accesslevel bool
+	CookieChecker bool
 }
 
 //newUser registers a new user to the database selected
@@ -25,7 +27,7 @@ func newUser(email, username, password string, db *sql.DB) {
 	}
 
 	u1 := uuid.NewV4()
-	_, errNewUser := db.Exec("INSERT INTO users (ID, email, username, password) VALUES (?, ?, ?, ?)",u1, email, username, hash)
+	_, errNewUser := db.Exec("INSERT INTO users (ID, email, username, password) VALUES (?, ?, ?, ?)", u1, email, username, hash)
 	if errNewUser != nil {
 		fmt.Printf("The error is %v", errNewUser.Error())
 		log.Fatal()
@@ -126,4 +128,13 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
+}
+
+func CookieAdd(cookie *http.Cookie, db *sql.DB) {
+	_, errCookie := db.Exec("INSERT INTO cookies (name, sessionID) VALUES (?, ?)", cookie.Name, cookie.Value)
+	if errCookie != nil {
+		fmt.Printf("The error is %v", errCookie.Error())
+		log.Fatal()
+	}
+
 }
