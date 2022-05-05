@@ -10,7 +10,7 @@
 
 <body>
     <div>
-        {{if .CookieChecker}}
+        {{if .MembersPost.CookieChecker}}
         <a href="/">Home</a>
         <a href="/logout">Log Out</a>
         {{else}}
@@ -19,9 +19,15 @@
         <a href="/register">Register</a>
         {{end}}
         <a href="/new-post">Create a new post</a>
+    </div>
+    <div>
+        {{.PostingDisplay.postText}}
+        {{.}}
+        <br>
+        {{end}}
 
     </div>
-    
+
 </body>
 
 </html>

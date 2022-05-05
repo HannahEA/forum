@@ -94,8 +94,9 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 			}
 			Person.CookieChecker = true
 
-			tpl := template.Must(template.ParseGlob("templates/homepage.html"))
-			if err := tpl.Execute(w, Person); err != nil {
+			x := homePageStruct{MembersPost: Person, PostingDisplay: postData(sqliteDatabase)}
+			tpl := template.Must(template.ParseGlob("templates/index.html"))
+			if err := tpl.Execute(w, x); err != nil {
 				log.Fatal(err.Error())
 			}
 		} else {
@@ -133,6 +134,12 @@ func postAdded(w http.ResponseWriter, r *http.Request) {
 	Executer(w, "templates/postAdded.html")
 
 }
+
+type homePageStruct struct {
+	MembersPost    userDetails
+	PostingDisplay []postDisplay
+}
+
 func Home(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(Person)
 
@@ -157,14 +164,15 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		// not logged in yet
 		Person.CookieChecker = false
 	}
-	tpl := template.Must(template.ParseGlob("templates/homepage.html"))
-	p := Person
-	// fmt.Println(p)
-	if err := tpl.Execute(w, p); err != nil {
+	//Initialise the homePAgeStruct to pass through multiple data types
+	x := homePageStruct{MembersPost: Person, PostingDisplay: postData(sqliteDatabase)}
+
+	tpl := template.Must(template.ParseGlob("templates/index.html"))
+
+	if err := tpl.Execute(w, x); err != nil {
 		log.Fatal(err.Error())
 	}
 	fmt.Println("YOUR COOKIE:", c)
-
 }
 
 func LogOut(w http.ResponseWriter, r *http.Request) {
