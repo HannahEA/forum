@@ -120,22 +120,21 @@ func registration(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func Post(w http.ResponseWriter, r *http.Request) {
+	Executer(w, "templates/newPost.html")
+
+}
+
+func postAdded(w http.ResponseWriter, r *http.Request) {
+	cat := r.FormValue("categories")
+	title := r.FormValue("title")
+	post := r.FormValue("post")
+	newPost(Person.Username, cat, title, post, sqliteDatabase)
+	Executer(w, "templates/postAdded.html")
+
+}
 func Home(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(Person)
-	// if Person.Accesslevel {
-	// 	cookie, err := r.Cookie("1st-cookie")
-	// 	fmt.Println("cookie:", cookie, "err:", err)
-	// 	if err != nil {
-	// 		fmt.Println("cookie was not found")
-	// 		cookie = &http.Cookie{
-	// 			Name:     "1st-cookie",
-	// 			Value:    "my first cookie value",
-	// 			HttpOnly: true,
-	// 			MaxAge:   90,
-	// 		}
-	// 	}
-	// }
-	// r.Cookie("1st-cookie").MaxAge = -1
 
 	c1, err1 := r.Cookie("1st-cookie")
 
@@ -149,21 +148,21 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	if err != nil && Person.Accesslevel {
 		//logged in and on 2nd browser
 		Person.CookieChecker = false
-		
+
 	} else if err == nil && Person.Accesslevel {
 		//Original browser
 		Person.CookieChecker = true
-		
+
 	} else {
 		// not logged in yet
 		Person.CookieChecker = false
 	}
 	tpl := template.Must(template.ParseGlob("templates/homepage.html"))
-		p := Person
-		// fmt.Println(p)
-		if err := tpl.Execute(w, p); err != nil {
-			log.Fatal(err.Error())
-		}
+	p := Person
+	// fmt.Println(p)
+	if err := tpl.Execute(w, p); err != nil {
+		log.Fatal(err.Error())
+	}
 	fmt.Println("YOUR COOKIE:", c)
 
 }

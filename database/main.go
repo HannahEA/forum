@@ -46,11 +46,13 @@ func main() {
 	//Create the posts table
 	_, errPosts := sqliteDatabase.Exec(`
 		CREATE TABLE IF NOT EXISTS "posts" (
-			"postNum"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-			"userID"	TEXT NOT NULL,
-			"category"	TEXT,
+			"postID"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			"userName"	TEXT NOT NULL,
+			"category"	TEXT ,
 			"likes" INTEGER,
-			"dislikes" INTEGER
+			"dislikes" INTEGER,
+			"title" TEXT,
+			"post" TEXT
 		);
 	`)
 
