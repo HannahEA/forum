@@ -12,6 +12,7 @@ import (
 var sqliteDatabase *sql.DB
 var Person userDetails
 
+
 func main() {
 
 	//Open the database SQLite file and create the database table

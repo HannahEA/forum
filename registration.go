@@ -99,6 +99,7 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 	}
 
 	var u userDetails
+
 	for rows1.Next() {
 		err := rows1.Scan(
 			&u.ID,
@@ -121,6 +122,7 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 		Person.Username = u.Username
 		Person.Password = u.Password
 		Person.Accesslevel = true
+		
 	}
 
 	return hashErr == nil

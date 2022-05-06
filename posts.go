@@ -14,6 +14,7 @@ type postDisplay struct {
 	Dislikes     int
 	TitleText    string
 	PostText     string
+	CookieChecker  bool
 }
 
 //newPost creates a new post by a registered user
@@ -44,7 +45,7 @@ func postData(db *sql.DB) []postDisplay {
 			&u.TitleText,
 			&u.PostText,
 		)
-
+		u.CookieChecker = Person.CookieChecker
 		if err != nil {
 			fmt.Println("SCANNING ERROR")
 			log.Fatal(err.Error())

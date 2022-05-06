@@ -199,6 +199,7 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 
 	var newPerson userDetails
 	Person = newPerson
+	
 	fmt.Println(Person)
 
 	tpl := template.Must(template.ParseGlob("templates/logout.html"))
