@@ -13,18 +13,25 @@
         {{if .MembersPost.CookieChecker}}
         <a href="/">Home</a>
         <a href="/logout">Log Out</a>
+        <a href="/new-post">Create a new post</a>
         {{else}}
         <a href="/">Home</a>
         <a href="/log">Login</a>
         <a href="/register">Register</a>
         {{end}}
-        <a href="/new-post">Create a new post</a>
+
     </div>
     <div>
-        {{.PostingDisplay.postText}}
-        {{.}}
+        {{ range .PostingDisplay}}
+        {{.Username}}
+        {{.Likes}}
+        {{.Dislikes}}
+        {{.TitleText}}
+        {{.TitleText}}
+        {{.PostText}}
         <br>
         {{end}}
+
 
     </div>
 

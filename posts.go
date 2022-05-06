@@ -7,13 +7,13 @@ import (
 )
 
 type postDisplay struct {
-	postID       int
-	username     string
-	postCategory string
-	likes        int
-	dislikes     int
-	titleText    string
-	postText     string
+	PostID       int
+	Username     string
+	PostCategory string
+	Likes        int
+	Dislikes     int
+	TitleText    string
+	PostText     string
 }
 
 //newPost creates a new post by a registered user
@@ -36,13 +36,13 @@ func postData(db *sql.DB) []postDisplay {
 
 		var u postDisplay
 		err := rows.Scan(
-			&u.postID,
-			&u.username,
-			&u.postCategory,
-			&u.likes,
-			&u.dislikes,
-			&u.titleText,
-			&u.postText,
+			&u.PostID,
+			&u.Username,
+			&u.PostCategory,
+			&u.Likes,
+			&u.Dislikes,
+			&u.TitleText,
+			&u.PostText,
 		)
 
 		if err != nil {

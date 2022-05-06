@@ -5,23 +5,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Forum</title>
 </head>
 
 <body>
     <div>
         <form method="POST" action="/post-added">
             <br>
-            <input type="textarea" value="title" name="title"><br>
-            <input type="radio" id="Sport" name="categories" value="Sport">
+            <input type="textarea" placeholder="title" name="title"><br>
+
+            <label for="categories">Select a Category:</label>
+            <select name="categories" id="categories">
+            <option value="Sport">Sport</option>
+            <option value="Science">Science</option>
+            <option value="Music">Music</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Movies">Movies</option>
+            <option value="Food">Food</option>
+            <option value="Travel">Travel</option>
+            <option value="Tech">Tech</option>
+            </select>
+
+
+            <!-- <input type="radio" id="Sport" name="categories" value="Sport">
             <label for="Sport">Sport</label><br>
             <input type="radio" id="Science" name="categories" value="Science">
             <label for="Science">Science</label><br>
             <input type="radio" id="Music" name="categories" value="Music">
-            <label for="Music">Music</label>
+            <label for="Music">Music</label> -->
             <br>
             <br>
-            <input type="text" name="post" value="Post">
+            <input type="text" name="post" placeholder="Enter your text here">
 
             <br>
             <input type="submit" id="postSubmit" value="Submit">
