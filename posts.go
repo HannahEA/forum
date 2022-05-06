@@ -7,14 +7,14 @@ import (
 )
 
 type postDisplay struct {
-	PostID       int
-	Username     string
-	PostCategory string
-	Likes        int
-	Dislikes     int
-	TitleText    string
-	PostText     string
-	CookieChecker  bool
+	PostID        int
+	Username      string
+	PostCategory  string
+	Likes         int
+	Dislikes      int
+	TitleText     string
+	PostText      string
+	CookieChecker bool
 }
 
 //newPost creates a new post by a registered user
@@ -56,13 +56,13 @@ func postData(db *sql.DB) []postDisplay {
 }
 
 func LikeButton(postID string, db *sql.DB) {
-	likes, err:= db.Query("SELECT Likes FROM posts WHERE postID = (?)", postID)
+	likes, err := db.Query("SELECT Likes FROM posts WHERE postID = (?)", postID)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	var temp postDisplay
 	for likes.Next() {
-		err := likes.Scan (
+		err := likes.Scan(
 			&temp.Likes,
 		)
 		if err != nil {
@@ -71,11 +71,33 @@ func LikeButton(postID string, db *sql.DB) {
 		}
 	}
 	temp.Likes++
-	_, err2:= db.Exec("UPDATE posts SET likes = (?) WHERE postID = (?)", temp.Likes, postID)
+	_, err2 := db.Exec("UPDATE posts SET likes = (?) WHERE postID = (?)", temp.Likes, postID)
 	if err2 != nil {
 		fmt.Println("LIKE ERROR")
 		log.Fatal(err.Error())
 	}
-	
-	
+}
+
+func DislikeButton(postID string, db *sql.DB) {
+	Dislikes, err := db.Query("SELECT dislikes FROM posts WHERE postID = (?)", postID)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	var temp postDisplay
+	for Dislikes.Next() {
+		err := Dislikes.Scan(
+			&temp.Dislikes,
+		)
+		if err != nil {
+			fmt.Println("SCANNING ERROR")
+			log.Fatal(err.Error())
+		}
+	}
+	temp.Dislikes++
+	_, err2 := db.Exec("UPDATE posts SET dislikes = (?) WHERE postID = (?)", temp.Dislikes, postID)
+	if err2 != nil {
+		fmt.Println("DISLIKE ERROR")
+		log.Fatal(err.Error())
+	}
+
 }

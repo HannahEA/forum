@@ -149,6 +149,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	postNum := r.FormValue("likeBtn")
 	LikeButton(postNum, sqliteDatabase)
 
+	//Dislikes
+	dislikePostNum := r.FormValue("dislikeBtn")
+	DislikeButton(dislikePostNum, sqliteDatabase)
+
 	c1, err1 := r.Cookie("1st-cookie")
 
 	if err1 == nil && !Person.Accesslevel {

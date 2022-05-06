@@ -23,9 +23,16 @@
       {{ range .PostingDisplay}}
       <br />
       {{.Username}}
+       <br/>
+      {{.PostCategory}}
+      <br />
+      {{.TitleText}}
+      <br />
+      {{.PostText}}
       <br />
       {{.Likes}}
       <br />
+      <div>
       {{if .CookieChecker}}
       <form action="/" method="POST">
         <input type="submit" id="submit" name="likeBtn" value="{{.PostID}}" />
@@ -34,11 +41,13 @@
       <br />
       {{.Dislikes}}
       <br />
-      {{.PostCategory}}
-      <br />
-      {{.TitleText}}
-      <br />
-      {{.PostText}}
+      {{if .CookieChecker}}
+      <form action="/" method="POST">
+        <input type="submit" id="submit" name="dislikeBtn" value="{{.PostID}}" />
+      </form>
+      {{end}}
+      </div>
+     
       <br />
       {{end}}
     </div>
