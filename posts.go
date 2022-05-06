@@ -53,3 +53,28 @@ func postData(db *sql.DB) []postDisplay {
 	}
 	return finalArray
 }
+
+func LikeButton(postID string, db *sql.DB) {
+	likes, err:= db.Query("SELECT Likes FROM posts WHERE postID = (?)", postID)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	var temp postDisplay
+	for likes.Next() {
+		err := likes.Scan (
+			&temp.Likes,
+		)
+		if err != nil {
+			fmt.Println("SCANNING ERROR")
+			log.Fatal(err.Error())
+		}
+	}
+	temp.Likes++
+	_, err2:= db.Exec("UPDATE posts SET likes = (?) WHERE postID = (?)", temp.Likes, postID)
+	if err2 != nil {
+		fmt.Println("LIKE ERROR")
+		log.Fatal(err.Error())
+	}
+	
+	
+}

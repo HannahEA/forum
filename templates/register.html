@@ -23,6 +23,14 @@
             <input type="password" id="password" name="password" required>
         </div>
         <br>
+
+        {{if .RegistrationAttempted}}
+        {{if .SuccessfulRegistration }}
+        <p>You have successfully registered. Please log in</p>
+        <a href="/log">Log in</a>
+        {{else}}
+        <p>The email or username is already in use. Please try again</p>
+        {{end}}{{end}}
         <div>
             <input type="submit" id="submit" value="Submit">
         </div>

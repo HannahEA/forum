@@ -23,7 +23,7 @@ func main() {
 	}
 	//Defer the close
 	defer sqliteDatabase.Close()
-
+	
 	http.HandleFunc("/", Home)
 	http.HandleFunc("/log", LoginHandler)
 	http.HandleFunc("/login", LoginResult)

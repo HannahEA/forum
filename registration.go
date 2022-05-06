@@ -18,6 +18,8 @@ type userDetails struct {
 	Accesslevel bool
 	CookieChecker bool
 	Attempted bool
+	RegistrationAttempted bool
+	SuccessfulRegistration bool
 }
 
 //newUser registers a new user to the database selected
@@ -58,14 +60,14 @@ func userExist(email, username string, db *sql.DB) (bool, string) {
 	}
 
 	if count == 0 && count1 == 0 {
-		return true, "You have successfully registered"
+		return false, "You have successfully registered"
 	} else if count1 == 1 && count == 1 {
-		return false, "This account already exists. Please sign in"
+		return true, "This account already exists. Please sign in"
 
 	} else if count == 1 {
-		return false, "This email is already taken. Please try a different email address"
+		return true, "This email is already taken. Please try a different email address"
 	} else {
-		return false, "This username is already taken. Please try a different username"
+		return true, "This username is already taken. Please try a different username"
 	}
 }
 

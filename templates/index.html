@@ -22,9 +22,16 @@
 
     </div>
     <div>
+        {{if .MembersPost.Accesslevel}}
+        <form method="POST" action="/">
+            <input type="submit" id="submit" name="likeBtn" value=1>
+        </form>
+        {{end}}
         {{ range .PostingDisplay}}
         {{.Username}}
+        <br>
         {{.Likes}}
+       
         {{.Dislikes}}
         {{.PostCategory}}
         {{.TitleText}}

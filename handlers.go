@@ -27,32 +27,6 @@ import (
 // 	Unparsed []string
 // }
 
-func registration2(w http.ResponseWriter, r *http.Request) {
-
-	userN := r.FormValue("username")
-	email := r.FormValue("email")
-	pass := r.FormValue("password")
-
-	exist, value := userExist(email, userN, sqliteDatabase)
-
-	tpl := template.Must(template.ParseGlob("templates/register2.html"))
-
-	if !exist {
-		if err := tpl.Execute(w, value); err != nil {
-			log.Fatal(err.Error())
-		}
-	} else {
-
-		newUser(email, userN, pass, sqliteDatabase)
-
-		if err := tpl.Execute(w, value); err != nil {
-			log.Fatal(err.Error())
-		}
-
-	}
-
-}
-
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	if Person.Accesslevel {
@@ -108,7 +82,7 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else {
-		tpl := template.Must(template.ParseGlob("templates/login2.html"))
+		tpl := template.Must(template.ParseGlob("templates/login.html"))
 		if err := tpl.Execute(w, Person); err != nil {
 			log.Fatal(err.Error())
 		}
@@ -117,9 +91,37 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 
 func registration(w http.ResponseWriter, r *http.Request) {
 	tpl := template.Must(template.ParseGlob("templates/register.html"))
-	if err := tpl.Execute(w, ""); err != nil {
+	if err := tpl.Execute(w, Person); err != nil {
 		log.Fatal(err.Error())
 	}
+}
+
+func registration2(w http.ResponseWriter, r *http.Request) {
+
+	userN := r.FormValue("username")
+	email := r.FormValue("email")
+	pass := r.FormValue("password")
+	Person.RegistrationAttempted = true
+
+	exist, _ := userExist(email, userN, sqliteDatabase)
+
+	tpl := template.Must(template.ParseGlob("templates/register.html"))
+
+	if exist {
+		if err := tpl.Execute(w, Person); err != nil {
+			log.Fatal(err.Error())
+		}
+
+	} else {
+		Person.SuccessfulRegistration = true
+		newUser(email, userN, pass, sqliteDatabase)
+
+		if err := tpl.Execute(w, Person); err != nil {
+			log.Fatal(err.Error())
+		}
+
+	}
+
 }
 
 func Post(w http.ResponseWriter, r *http.Request) {
@@ -143,6 +145,9 @@ type homePageStruct struct {
 
 func Home(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(Person)
+	//Likes
+	postNum := r.FormValue("likeBtn")
+	LikeButton(postNum, sqliteDatabase)
 
 	c1, err1 := r.Cookie("1st-cookie")
 
