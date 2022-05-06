@@ -17,6 +17,7 @@ type userDetails struct {
 	Password    string
 	Accesslevel bool
 	CookieChecker bool
+	Attempted bool
 }
 
 //newUser registers a new user to the database selected

@@ -59,13 +59,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Executer(w, "templates/accessDenied.html")
 	} else {
 		tpl := template.Must(template.ParseGlob("templates/login.html"))
-		if err := tpl.Execute(w, ""); err != nil {
+		if err := tpl.Execute(w, Person); err != nil {
 			log.Fatal(err.Error())
 		}
 	}
 }
 
 func LoginResult(w http.ResponseWriter, r *http.Request) {
+	Person.Attempted = true
 	email := r.FormValue("email")
 	pass := r.FormValue("password")
 	uuid := uuid.NewV4()
@@ -100,15 +101,15 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 				log.Fatal(err.Error())
 			}
 		} else {
-			tpl := template.Must(template.ParseGlob("templates/login2.html"))
-			if err := tpl.Execute(w, "Incorrect password"); err != nil {
+			tpl := template.Must(template.ParseGlob("templates/login.html"))
+			if err := tpl.Execute(w, Person); err != nil {
 				log.Fatal(err.Error())
 			}
 		}
 
 	} else {
 		tpl := template.Must(template.ParseGlob("templates/login2.html"))
-		if err := tpl.Execute(w, "Email not recognised"); err != nil {
+		if err := tpl.Execute(w, Person); err != nil {
 			log.Fatal(err.Error())
 		}
 	}
