@@ -46,7 +46,7 @@ func main() {
 	//Create the posts table
 	_, errPosts := sqliteDatabase.Exec(`
 		CREATE TABLE IF NOT EXISTS "posts" (
-			"postID"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			"postID"	TEXT,
 			"userName"	TEXT NOT NULL,
 			"category"	TEXT ,
 			"likes" INTEGER,
@@ -76,8 +76,10 @@ func main() {
 
 		//Create the likes table
 	_, errLikes := sqliteDatabase.Exec(`
-		CREATE TABLE IF NOT EXISTS "likes" (
-			initial	INTEGER		
+		CREATE TABLE IF NOT EXISTS "liketable" (
+			user	TEXT,	
+			postID TEXT,
+			reference INTEGER	
 		);
 	`)
 
@@ -86,15 +88,4 @@ func main() {
 		log.Fatal(errPosts.Error())
 	}
 
-			//Create the likes table
-	_, errDislikes := sqliteDatabase.Exec(`
-		CREATE TABLE IF NOT EXISTS "dislikes" (	
-			initial	INTEGER		
-		);
-	`)
-
-	if errDislikes != nil {
-		fmt.Println("Dislike table ERROR")
-		log.Fatal(errPosts.Error())
-	}
 }

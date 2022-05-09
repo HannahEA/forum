@@ -11,15 +11,16 @@ import (
 )
 
 type userDetails struct {
-	ID          string
-	Email       string
-	Username    string
-	Password    string
-	Accesslevel bool
-	CookieChecker bool
-	Attempted bool
-	RegistrationAttempted bool
+	ID                     string
+	Email                  string
+	Username               string
+	Password               string
+	Accesslevel            bool
+	CookieChecker          bool
+	Attempted              bool
+	RegistrationAttempted  bool
 	SuccessfulRegistration bool
+	PostAdded              bool
 }
 
 //newUser registers a new user to the database selected
@@ -35,6 +36,7 @@ func newUser(email, username, password string, db *sql.DB) {
 		fmt.Printf("The error is %v", errNewUser.Error())
 		log.Fatal()
 	}
+
 }
 
 //userExsists checks if the username entered is already taken. If it is the function returns true.
@@ -122,7 +124,7 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 		Person.Username = u.Username
 		Person.Password = u.Password
 		Person.Accesslevel = true
-		
+
 	}
 
 	return hashErr == nil

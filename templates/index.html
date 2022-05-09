@@ -35,8 +35,8 @@
     <br />
     <div>
       {{if .CookieChecker}}
-      <form action="/" method="POST">
-        <input type="submit" id="submit" name="likeBtn" value="{{.PostID}}" placeholder="like" />
+      <form action="/" method="POST" id="likeBTN">
+        <input type="submit" id="likeSubmit" name="likeBtn" value="{{.PostID}}" placeholder="like" />
       </form>
       {{end}}
       <br />
@@ -44,7 +44,7 @@
       <br />
       {{if .CookieChecker}}
       <form action="/" method="POST">
-        <input type="submit" id="submit" name="dislikeBtn" value="{{.PostID}}" />
+        <input type="submit" id="dislikeSubmit" name="dislikeBtn" value="{{.PostID}}" />
       </form>
       {{end}}
     </div>
@@ -52,6 +52,13 @@
     <br />
     {{end}}
   </div>
+
+  <script>
+    /*Resets form after submission to prevent the same value resubmitting*/
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, window.location.href);
+    }
+  </script>
 </body>
 
 </html>

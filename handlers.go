@@ -136,7 +136,11 @@ func registration2(w http.ResponseWriter, r *http.Request) {
 }
 
 func Post(w http.ResponseWriter, r *http.Request) {
-	Executer(w, "templates/newPost.html")
+	Person.PostAdded = false
+	tpl := template.Must(template.ParseGlob("templates/newPost.html"))
+	if err := tpl.Execute(w, Person); err != nil {
+		log.Fatal(err.Error())
+	}
 
 }
 
@@ -145,7 +149,15 @@ func postAdded(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	post := r.FormValue("post")
 	newPost(Person.Username, cat, title, post, sqliteDatabase)
-	Executer(w, "templates/postAdded.html")
+
+	//Initialise the homePAgeStruct to pass through multiple data types
+	x := homePageStruct{MembersPost: Person, PostingDisplay: postData(sqliteDatabase)}
+
+	tpl := template.Must(template.ParseGlob("templates/index.html"))
+
+	if err := tpl.Execute(w, x); err != nil {
+		log.Fatal(err.Error())
+	}
 
 }
 
@@ -158,10 +170,13 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(Person)
 	//Likes
 	postNum := r.FormValue("likeBtn")
+	fmt.Printf("\n LIKE BUTTON VALUE \n")
+	fmt.Println(postNum)
 	LikeButton(postNum, sqliteDatabase)
 
 	//Dislikes
 	dislikePostNum := r.FormValue("dislikeBtn")
+	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
 	DislikeButton(dislikePostNum, sqliteDatabase)
 
 	c1, err1 := r.Cookie("1st-cookie")
