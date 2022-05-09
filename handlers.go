@@ -29,13 +29,18 @@ import (
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
-	if Person.Accesslevel {
-		Executer(w, "templates/accessDenied.html")
-	} else {
-		tpl := template.Must(template.ParseGlob("templates/login.html"))
-		if err := tpl.Execute(w, Person); err != nil {
-			log.Fatal(err.Error())
-		}
+	// if Person.Accesslevel {
+	// 	Executer(w, "templates/accessDenied.html")
+	// } else {
+	// 	tpl := template.Must(template.ParseGlob("templates/login.html"))
+	// 	if err := tpl.Execute(w, Person); err != nil {
+	// 		log.Fatal(err.Error())
+	// 	}
+	// }
+
+	tpl := template.Must(template.ParseGlob("templates/login.html"))
+	if err := tpl.Execute(w, Person); err != nil {
+		log.Fatal(err.Error())
 	}
 }
 
@@ -45,12 +50,17 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 	pass := r.FormValue("password")
 	uuid := uuid.NewV4()
 
-	if ValidEmail(email, sqliteDatabase) {
+	if Person.Accesslevel {
+		Person.Attempted = false
+		tpl := template.Must(template.ParseGlob("templates/login.html"))
+		if err := tpl.Execute(w, Person); err != nil {
+			log.Fatal(err.Error())
+		}
+	} else if ValidEmail(email, sqliteDatabase) {
 		if LoginValidator(email, pass, sqliteDatabase) {
 			//Create the cookie
 
 			if Person.Accesslevel {
-
 				cookie, err := r.Cookie("1st-cookie")
 				fmt.Println("cookie:", cookie, "err:", err)
 				if err != nil {
@@ -68,6 +78,7 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 				// CookieAdd(cookie, sqliteDatabase)
 			}
 			Person.CookieChecker = true
+			Person.Attempted = false
 
 			x := homePageStruct{MembersPost: Person, PostingDisplay: postData(sqliteDatabase)}
 			tpl := template.Must(template.ParseGlob("templates/index.html"))
@@ -203,7 +214,7 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 
 	var newPerson userDetails
 	Person = newPerson
-	
+
 	fmt.Println(Person)
 
 	tpl := template.Must(template.ParseGlob("templates/logout.html"))

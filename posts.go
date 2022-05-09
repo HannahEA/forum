@@ -19,10 +19,13 @@ type postDisplay struct {
 
 //newPost creates a new post by a registered user
 func newPost(userName, category, title, post string, db *sql.DB) {
-	_, err := db.Exec("INSERT INTO posts (userName, category, likes, dislikes, title, post) VALUES (?,?, 0,0, ?, ?)", userName, category, title, post)
+	_, err := db.Exec("INSERT INTO posts (userName, category, likes, dislikes, title, post) VALUES (?, ?, 0, 0, 0, 0, ?, ?)", userName, category, title, post)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+
+	// _ , errAddLikeColumn := db.Exec("ALER TABLE likes ADD ")
+
 }
 
 func postData(db *sql.DB) []postDisplay {
@@ -56,7 +59,7 @@ func postData(db *sql.DB) []postDisplay {
 }
 
 func LikeButton(postID string, db *sql.DB) {
-	likes, err := db.Query("SELECT Likes FROM posts WHERE postID = (?)", postID)
+	likes, err := db.Query("SELECT likes FROM posts WHERE postID = (?)", postID)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -70,12 +73,14 @@ func LikeButton(postID string, db *sql.DB) {
 			log.Fatal(err.Error())
 		}
 	}
-	temp.Likes++
-	_, err2 := db.Exec("UPDATE posts SET likes = (?) WHERE postID = (?)", temp.Likes, postID)
-	if err2 != nil {
-		fmt.Println("LIKE ERROR")
-		log.Fatal(err.Error())
-	}
+
+		temp.Likes++
+		_, err2 := db.Exec("UPDATE posts SET likes = (?) WHERE postID = (?)", temp.Likes, postID)
+		if err2 != nil {
+			fmt.Println("LIKE ERROR")
+			log.Fatal(err.Error())
+		}
+	
 }
 
 func DislikeButton(postID string, db *sql.DB) {

@@ -12,7 +12,6 @@ import (
 var sqliteDatabase *sql.DB
 var Person userDetails
 
-
 func main() {
 
 	//Open the database SQLite file and create the database table
@@ -24,7 +23,11 @@ func main() {
 	}
 	//Defer the close
 	defer sqliteDatabase.Close()
-	
+
+	fs := http.FileServer(http.Dir("./static"))
+
+	http.Handle("/static/", http.StripPrefix("/static/", fs)) // handling the CSS
+
 	http.HandleFunc("/", Home)
 	http.HandleFunc("/log", LoginHandler)
 	http.HandleFunc("/login", LoginResult)

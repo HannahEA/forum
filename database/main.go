@@ -73,4 +73,28 @@ func main() {
 		fmt.Println("TABLE ERROR")
 		log.Fatal(errTbl.Error())
 	}
+
+		//Create the likes table
+	_, errLikes := sqliteDatabase.Exec(`
+		CREATE TABLE IF NOT EXISTS "likes" (
+			initial	INTEGER		
+		);
+	`)
+
+	if errLikes != nil {
+		fmt.Println("Like table ERROR")
+		log.Fatal(errPosts.Error())
+	}
+
+			//Create the likes table
+	_, errDislikes := sqliteDatabase.Exec(`
+		CREATE TABLE IF NOT EXISTS "dislikes" (	
+			initial	INTEGER		
+		);
+	`)
+
+	if errDislikes != nil {
+		fmt.Println("Dislike table ERROR")
+		log.Fatal(errPosts.Error())
+	}
 }

@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-  </head>
 
-  <body>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home</title>
+</head>
+
+<body>
+  <div>
+    {{if .MembersPost.CookieChecker}}
+    <a href="/">Home</a>
+    <a href="/logout">Log Out</a>
+    <a href="/new-post">Create a new post</a>
+    {{else}}
+    <a href="/">Home</a>
+    <a href="/log">Login</a>
+    <a href="/register">Register</a>
+    {{end}}
+  </div>
+  <div>
+    {{ range .PostingDisplay}}
+    <br />
+    {{.Username}}
+    <br />
+    {{.PostCategory}}
+    <br />
+    {{.TitleText}}
+    <br />
+    {{.PostText}}
+    <br />
+    {{.Likes}}
+    <br />
     <div>
-      {{if .MembersPost.CookieChecker}}
-      <a href="/">Home</a>
-      <a href="/logout">Log Out</a>
-      <a href="/new-post">Create a new post</a>
-      {{else}}
-      <a href="/">Home</a>
-      <a href="/log">Login</a>
-      <a href="/register">Register</a>
-      {{end}}
-    </div>
-    <div>
-      {{ range .PostingDisplay}}
-      <br />
-      {{.Username}}
-       <br/>
-      {{.PostCategory}}
-      <br />
-      {{.TitleText}}
-      <br />
-      {{.PostText}}
-      <br />
-      {{.Likes}}
-      <br />
-      <div>
       {{if .CookieChecker}}
       <form action="/" method="POST">
-        <input type="submit" id="submit" name="likeBtn" value="{{.PostID}}" />
+        <input type="submit" id="submit" name="likeBtn" value="{{.PostID}}" placeholder="like" />
       </form>
       {{end}}
       <br />
@@ -46,10 +47,11 @@
         <input type="submit" id="submit" name="dislikeBtn" value="{{.PostID}}" />
       </form>
       {{end}}
-      </div>
-     
-      <br />
-      {{end}}
     </div>
-  </body>
+
+    <br />
+    {{end}}
+  </div>
+</body>
+
 </html>
