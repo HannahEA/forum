@@ -62,6 +62,11 @@ func postData(db *sql.DB) []postDisplay {
 			log.Fatal(err.Error())
 		}
 		finalArray = append(finalArray, u)
+
+		//Reverse finalArray so that the most recently added posts show first
+		for i, j := 0, len(finalArray)-1; i < j; i, j = i+1, j-1 {
+			finalArray[i], finalArray[j] = finalArray[j], finalArray[i]
+		}
 	}
 	return finalArray
 }

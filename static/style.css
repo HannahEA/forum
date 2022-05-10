@@ -40,6 +40,7 @@
 
   background: #0f0dad;
 }
+
 /*-------------------------------COMMENT SECTION-------------------------------------------*/
 .postSection {
   background: #24891b;
@@ -331,4 +332,33 @@ input {
 .Form-login-Signup-div {
   display: flex;
   justify-content: center;
+}
+
+/*<--------------------------- like buttons---------------------------------->*/
+
+#likeSubmit {
+  width: 40px;
+  height: 20px;
+  background-color: rgba(0, 128, 0, 0.628);
+  color: rgba(0, 128, 0, 0);
+  border: none;
+  margin-left: -41px;
+}
+
+#dislikeSubmit {
+  color: rgba(255, 0, 0, 0);
+  background-color: rgba(255, 0, 0, 0.628);
+  border: none;
+  height: 20px;
+  width: 60px;
+  margin-left: -60px;
+
+
+}
+
+.LikeBtnDiv {
+  float: right;
+  margin-right: 10px;
+  margin-bottom: 30px;
+  
 }

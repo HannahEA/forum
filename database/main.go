@@ -89,16 +89,15 @@ func main() {
 	}
 
 	//Create the database for each user
-	_, errTbl := sqliteDatabase.Exec(`
+	_, errComments := sqliteDatabase.Exec(`
 		CREATE TABLE IF NOT EXISTS "comments" (
 			"postID"	TEXT,
-			"email" 	TEXT UNIQUE,
 			"username"	TEXT UNIQUE,
-			"password"	TEXT 
+			"commentText"	TEXT 
 		);
 	`)
 
-	if errTbl != nil {
+	if errComments != nil {
 		fmt.Println("USER ERROR")
 		log.Fatal(errTbl.Error())
 	}
