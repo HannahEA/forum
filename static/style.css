@@ -1,205 +1,334 @@
-/* ------------------------------ Stlying the individual posts------------------------------ */
-* {
-    box-sizing: border-box;
+.Body {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  background: #708090;
+  height: 100vh;
+  width: 100vw;
 }
 
-body {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    background: #708090;
-    height: 100vh;
-    width: 100vw;
-}
-
-/* #postUsername {
-    vertical-align: top;
-    margin-top: -35px;
-}
-
-#indPosts {
-    margin-top: 10px;
-    border: 2px solid black;
-    padding: 2px;
-}
-
-#imgPlaceholder {
-    border: 2px solid black;
-    border-radius: 30px;
-    width: 10%;
-    height: 10%;
-    margin: 0, 50px, 0, 50px;
-}
-
-#postTitle {
-    position: relative;
-    text-align: center;
-    margin-top: -50px;
-}  */
-
-/*---------------------------------SIDEBAR----------------------------------------------*/
 .Sidebar {
-    position: absolute;
-    width: 18vw;
-    height: 95vh;
-    left: 0px;
-    top: 6vh;
-    background: #777779;
+  position: absolute;
+  width: 18vw;
+  height: 95vh;
+  left: 0px;
+  top: 6vh;
+  background: #777779;
 }
 
-/*--------------------------------------MENU--------------------------------------------*/
 .Menu {
-    /* Auto layout */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    position: absolute;
-    width: 14vw;
-    height: 167px;
-    left: 0px;
-    top: 111px;
-    background: #c3b6b6;
-    padding: 6px;
+  /* Auto layout */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  width: 14vw;
+  height: 167px;
+  left: 0px;
+  top: 111px;
+  background: #c3b6b6;
+  padding: 6px;
 }
 
 .Menu-Item-Search {
-    position: absolute;
-    width: 14vw;
-    height: 41px;
-    left: 0px;
-    top: 40px;
-    padding: 6px;
+  position: absolute;
+  width: 14vw;
+  height: 41px;
+  left: 0px;
+  top: 40px;
+  padding: 6px;
 
-    background: #d1aa1b;
+  background: #0f0dad;
 }
-
 /*-------------------------------COMMENT SECTION-------------------------------------------*/
 .postSection {
-    background: #b58814;
-    margin-left: 18vw;
-    width: 60vw;
-    height: 95vh;
-    top: 6vh;
-    flex-direction: column;
-    align-items: flex-start;
-    position: absolute;
-    overflow: scroll;
+  background: #24891b;
+  margin-left: 18vw;
+  width: 60vw;
+  height: 95vh;
+  top: 6vh;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  overflow: scroll;
 }
 
 .indPosts {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 5px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 5px 3px;
 
-    width: 54vw;
-    min-height: 22vh;
+  width: 54vw;
+  min-height: 22vh;
 
-    background: #ffffff;
-    /* Border */
-    border: 1px solid #47469f;
-    box-sizing: border-box;
-    /* Shadow */
-    box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.15);
-    border-radius: 15px;
+  background: #ffffff;
+  /* Border */
+  border: 1px solid #47469f;
+  box-sizing: border-box;
+  /* Shadow */
+  box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 15px;
 
-    margin-right: auto;
-    margin-left: auto;
-    margin-top: 3vh;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 3vh;
 }
 
 .Comment-header {
-    width: 53vw;
-    height: 6vh;
-    /* background: #d1eb07;*/
+  width: 53vw;
+  height: 6vh;
+  /* background: #d1eb07;*/
 }
 
 .Comment-body {
-    width: 53vw;
-    min-height: 13vh;
-    /* background: #59eb0a; */
+  width: 53vw;
+  min-height: 13vh;
+  /* background: #59eb0a; */
 }
 
 .Comment-footer {
-    width: 53vw;
-    height: 3vh;
-    color: #888;
-    /* background: #07aeeb; */
+  width: 53vw;
+  height: 3vh;
+  color: #888;
+  /* background: #07aeeb; */
 }
 
 .chip {
-    display: inline-block;
-    padding: 0 25px;
-    height: 50px;
-    font-size: 16px;
-    line-height: 50px;
-    border-radius: 25px;
+  display: inline-block;
+  padding: 0 25px;
+  height: 50px;
+  font-size: 16px;
+  line-height: 50px;
+  border-radius: 25px;
 }
 
 .chip img {
-    float: left;
-    margin: 0 10px 0 -25px;
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
+  float: left;
+  margin: 0 10px 0 -25px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
 }
 
-/* .Category {
-    background-color: rgb(226, 226, 226);
-    padding: 5px 10px;
-    border-radius: 10%;
-    margin-right: 6px;
-    margin-left: 6px;
-} */
+.Category {
+  background-color: rgb(226, 226, 226);
+  padding: 5px 10px;
+  border-radius: 10%;
+  margin-right: 6px;
+  margin-left: 6px;
+}
 
 .Left-Comment-footer {
-    float: right;
+  float: right;
 }
 
-/*---------------------------------The Modal (background)---------------------------------*/
-.modal {
-    display: none;
-    /* Hidden by default */
-    position: fixed;
-    /* Stay in place */
-    z-index: 1;
-    /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
-    overflow: auto;
-    /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0);
-    /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4);
-    /* Black w/ opacity */
+.Help-box {
+  /* Auto layout */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  width: 18vw;
+  height: 267px;
+  top: 7vh;
+  background: #ad9393;
+  padding: 6px;
+  margin-left: 79vw;
 }
 
-/* Modal Content/Box */
+.Navbar {
+  position: absolute;
+  height: 6vh;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  width: 100vw;
+  overflow: hidden;
+  background: #ffffff;
+  /* Border */
+}
+
+.Navbar-Logo {
+  position: absolute;
+  width: 112px;
+  height: 29.6px;
+  left: 50px;
+  top: 27px;
+}
+
+.Navbar-buttons {
+  display: flex;
+  float: right;
+}
+
+.Nav-Register-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12px 20px;
+  margin: 4px;
+
+  height: 38px;
+  left: 1204px;
+  top: 23px;
+
+  background: #6e6868;
+  border-radius: 5px;
+}
+
+.Nav-Login-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12px 20px;
+  margin: 4px;
+  height: 38px;
+  left: 1333px;
+  top: 23px;
+
+  /* Border */
+  background: #eaeaea;
+  border-radius: 5px;
+}
+
+.Nav-Logout-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12px 20px;
+  margin: 4px;
+  height: 38px;
+  left: 1333px;
+  top: 23px;
+
+  /* Border */
+  background: #425a63;
+  border-radius: 5px;
+}
+
+.Not_Login {
+  display: flex;
+}
+
+.Login {
+  display: none;
+}
+
+.Modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+.Rmodal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+/* Modal Content */
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    /* Could be more or less, depending on screen size */
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+  height: 60%;
+  border-radius: 8px;
 }
 
-/* The Close Button */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+.lclose:hover,
+.lclose:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.Form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  border-radius: 8px;
+  height: 25px;
+  width: 250px;
+}
+
+.Form-btn-login {
+  margin-top: 3vh;
+  height: 35px;
+  width: 210px;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 8px;
+  background: #525d42;
+  font-size: large;
+}
+
+.Form-btn-register {
+  margin-top: 3vh;
+  height: 35px;
+  width: 210px;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 8px;
+  background: #ad8f6c;
+  font-size: large;
+}
+
+.Form-login-inputBox {
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  text-align: initial;
+}
+
+.Form-login-Signup-btn {
+  background: none;
+  border: none;
+  font-size: large;
+  cursor: pointer;
+}
+
+.Form-login-Signup-div {
+  display: flex;
+  justify-content: center;
 }

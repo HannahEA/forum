@@ -12,55 +12,71 @@
   <title>Home</title>
 </head>
 
-<body>
-  <div>
+<!--------------------------------------------------------------- <body> ----------------------------->
+<body class="Body" onload="Onload('{{.}}')">
+  <!------------------------------------------------- Navbar -->
+  <nav class="Navbar">
+    <div class="Navbar-buttons">
+      <div id="Not_Login" class="Not_Login">
     {{if .MembersPost.CookieChecker}}
-    <a href="/">Home</a>
-    <a href="/logout">Log Out</a>
-    <a href="/new-post">Create a new post</a>
+    <span><button id="homeBtn" class="Nav-Home-btn"><a href="/">Home</a></button></span>
+    <span><button id="logoutBtn" class="Nav-logout-btn"><a href="/logout">Log Out</a></button></span>
+    <span><button id="newpostBtn" class="Nav-Newpost-btn"><a href="/new-post">Create a new post</a></button></span>
     {{else}}
-    <a href="/">Home</a>
-    <a href="/log">Login</a>
-    <a href="/register">Register</a>
+    <span><button id="homeBtn" class="Nav-Home-btn"><a href="/">Home</a></button></span>
+    <span><button id="logBtn" class="Nav-log-btn"><a href="/log">Login</a></button></span>
+    <span><button id="registerBtn" class="Nav-register-btn"><a href="/register">Register</a></button></span>
     {{end}}
   </div>
-
+  </div>
+  </nav>
+<!-------------------------------------------------- Comments Section ------------------------------>
   <div class="postSection">
   {{ range .PostingDisplay}}
   <div class="indPosts">
     <br />
     <div class="post-header">
-      <h3 >{{.Username}}</h3>
-    
-
-    {{.PostCategory}}
-    </div>
-    <h2 id="postTitle">{{.TitleText}}</h2>
-    <br />
-    <p id="postText">{{.PostText}}</p>
-    <br />
-    {{.Likes}}
-    <br />
-    <div>
-      {{if .CookieChecker}}
-      <form action="/" method="POST" id="likeBTN">
-        <input type="submit" id="likeSubmit" name="likeBtn" value="{{.PostID}}" placeholder="like" />
-      </form>
-      {{end}}
+      <div class="chip">
+        <img src="img/avatar.png" alt="{{.Username}}" width="96" height="96">
+      </div>
+      
+      <!-------------------------------------------------- Subject Post Section ------------------------------>
+      </div>   
+     <!-- Subject Title -->
+      <div class="postTitle" id="postTitle">{{.TitleText}}</div>
       <br />
-      {{.Dislikes}}
+      <!-- subject content goes into this location.-->
+      <p id="postText">{{.PostText}}</p>
       <br />
-      {{if .CookieChecker}}
-      <form action="/" method="POST">
-        <input type="submit" id="dislikeSubmit" name="dislikeBtn" value="{{.PostID}}" />
-      </form>
-      {{end}}
+      <!-------------------------------------------------- Subject section footer ------------------------------>
+      <div class="Comment-footer">
+      <span class="Category">{{.PostCategory}}</span> 
+      <span class="Category">{{.PostCategory}}</span>
+      <div class="Left-Comment-footer">
+        <span class="Category">{{.Likes}}</span>
+        <span>
+        {{if .CookieChecker}}
+        <form action="/" method="POST" id="likeBTN">
+          <label for="likeSubmit">like</label>
+          <input type="submit" id="likeSubmit" name="likeBtn" value="{{.PostID}}" placeholder="like" hidden />
+        </form>
+        {{end}}
+      </span>
+      <span class="Category">{{.Dislikes}}</span>
     </div>
-
-    <br />
-
   </div>
-  {{end}}
+  <div>
+    <br />
+    {{if .CookieChecker}}
+    <form action="/" method="POST">
+      <label for="dislikeSubmit">Dislike</label>
+      <input type="submit" id="dislikeSubmit" name="dislikeBtn" value="{{.PostID}}" placeholder="dislike" hidden />
+    </form>
+    {{end}}
+  </div>
+  <br />
+</div>
+{{end}}
   </div>
   <script>
     /*Resets form after submission to prevent the same value resubmitting*/
