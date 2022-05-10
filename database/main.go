@@ -88,4 +88,18 @@ func main() {
 		log.Fatal(errPosts.Error())
 	}
 
+	//Create the database for each user
+	_, errTbl := sqliteDatabase.Exec(`
+		CREATE TABLE IF NOT EXISTS "comments" (
+			"postID"	TEXT,
+			"email" 	TEXT UNIQUE,
+			"username"	TEXT UNIQUE,
+			"password"	TEXT 
+		);
+	`)
+
+	if errTbl != nil {
+		fmt.Println("USER ERROR")
+		log.Fatal(errTbl.Error())
+	}
 }
