@@ -24,16 +24,20 @@
     <a href="/register">Register</a>
     {{end}}
   </div>
-  <div>
-    {{ range .PostingDisplay}}
+
+  <div class="postSection">
+  {{ range .PostingDisplay}}
+  <div class="indPosts">
     <br />
-    {{.Username}}
-    <br />
+    <div class="post-header">
+      <h3 >{{.Username}}</h3>
+    
+
     {{.PostCategory}}
+    </div>
+    <h2 id="postTitle">{{.TitleText}}</h2>
     <br />
-    {{.TitleText}}
-    <br />
-    {{.PostText}}
+    <p id="postText">{{.PostText}}</p>
     <br />
     {{.Likes}}
     <br />
@@ -54,9 +58,10 @@
     </div>
 
     <br />
-    {{end}}
-  </div>
 
+  </div>
+  {{end}}
+  </div>
   <script>
     /*Resets form after submission to prevent the same value resubmitting*/
     if (window.history.replaceState) {

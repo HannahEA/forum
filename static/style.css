@@ -1,16 +1,161 @@
-/* Set all elements to have padding and border included in the width and height. */
+/* ------------------------------ Stlying the individual posts------------------------------ */
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-        Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    padding: 10px;
-    background-image: linear-gradient(to top, #20c431 0%, #deecdd 100%);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    background: #1a1818;
+    height: 100vh;
+    width: 100vw;
 }
 
-/*The Modal (background)*/
+/* #postUsername {
+    vertical-align: top;
+    margin-top: -35px;
+}
+
+#indPosts {
+    margin-top: 10px;
+    border: 2px solid black;
+    padding: 2px;
+}
+
+#imgPlaceholder {
+    border: 2px solid black;
+    border-radius: 30px;
+    width: 10%;
+    height: 10%;
+    margin: 0, 50px, 0, 50px;
+}
+
+#postTitle {
+    position: relative;
+    text-align: center;
+    margin-top: -50px;
+}  */
+
+/*---------------------------------SIDEBAR----------------------------------------------*/
+.Sidebar {
+    position: absolute;
+    width: 18vw;
+    height: 95vh;
+    left: 0px;
+    top: 6vh;
+    background: #777779;
+}
+
+/*--------------------------------------MENU--------------------------------------------*/
+.Menu {
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    width: 14vw;
+    height: 167px;
+    left: 0px;
+    top: 111px;
+    background: #c3b6b6;
+    padding: 6px;
+}
+
+.Menu-Item-Search {
+    position: absolute;
+    width: 14vw;
+    height: 41px;
+    left: 0px;
+    top: 40px;
+    padding: 6px;
+
+    background: #d1aa1b;
+}
+
+/*-------------------------------COMMENT SECTION-------------------------------------------*/
+.postSection {
+    background: #b58814;
+    margin-left: 18vw;
+    width: 60vw;
+    height: 95vh;
+    top: 6vh;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    overflow: scroll;
+}
+
+.indPosts {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 5px 3px;
+
+    width: 54vw;
+    min-height: 22vh;
+
+    background: #ffffff;
+    /* Border */
+    border: 1px solid #47469f;
+    box-sizing: border-box;
+    /* Shadow */
+    box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 3vh;
+}
+
+.Comment-header {
+    width: 53vw;
+    height: 6vh;
+    /* background: #d1eb07;*/
+}
+
+.Comment-body {
+    width: 53vw;
+    min-height: 13vh;
+    /* background: #59eb0a; */
+}
+
+.Comment-footer {
+    width: 53vw;
+    height: 3vh;
+    color: #888;
+    /* background: #07aeeb; */
+}
+.chip {
+    display: inline-block;
+    padding: 0 25px;
+    height: 50px;
+    font-size: 16px;
+    line-height: 50px;
+    border-radius: 25px;
+}
+
+.chip img {
+    float: left;
+    margin: 0 10px 0 -25px;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+/* .Category {
+    background-color: rgb(226, 226, 226);
+    padding: 5px 10px;
+    border-radius: 10%;
+    margin-right: 6px;
+    margin-left: 6px;
+} */
+
+.Left-Comment-footer {
+    float: right;
+}
+
+/*---------------------------------The Modal (background)---------------------------------*/
 .modal {
     display: none;
     /* Hidden by default */
