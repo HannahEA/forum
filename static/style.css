@@ -1,3 +1,15 @@
+/* Set all elements to have padding and border included in the width and height. */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+        Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    padding: 10px;
+    background-image: linear-gradient(to top, #20c431 0%, #deecdd 100%);
+}
+
 /*The Modal (background)*/
 .modal {
     display: none;
