@@ -53,6 +53,7 @@
       <div class="Comment-footer">
         <span class="Category">{{.PostCategory}}</span>
         <div class="Left-Comment-footer" id="like-dislikeBtns">
+
           <div class="LikeBtnDiv">
             <span class="Category">{{.Dislikes}}</span>
 
@@ -71,13 +72,16 @@
               {{if .CookieChecker}}
               <form action="/" method="POST" id="likeBTN">
                 <label for="likeSubmit">Likes</label>
-                <input type="submit" id="likeSubmit" name="likeBtn" value="{{.PostID}}" placeholder="like" />
+                <input type="submit" id="likeSubmit" name="likeBtn" value="{{.PostID}}" />
               </form>
               {{end}}
             </span>
           </div>
-
-
+          <div class="LikeBtnDiv">
+            <div>
+              <input type="button" id="postCommentsBtn" value="Comments">
+            </div>
+          </div>
         </div>
       </div>
       <br />

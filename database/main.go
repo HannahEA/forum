@@ -93,7 +93,9 @@ func main() {
 		CREATE TABLE IF NOT EXISTS "comments" (
 			"postID"	TEXT,
 			"username"	TEXT UNIQUE,
-			"commentText"	TEXT 
+			"commentText"	TEXT,
+			"likes" INTEGER,
+			"dislikes" INTEGER
 		);
 	`)
 

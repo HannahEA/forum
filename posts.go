@@ -292,18 +292,18 @@ func DislikeButton(postID string, db *sql.DB) {
 	}
 }
 
-// //Add a new comment to a post
-// func newComment(userName, postID, commentText string, db *sql.DB) {
-// 	if commentText == "" {
-// 		return
-// 	}
+//Add a new comment to a post
+func newComment(userName, postID, commentText string, db *sql.DB) {
+	if commentText == "" {
+		return
+	}
 
-// 	fmt.Println("ADDING Comment")
-// 	uuid := uuid.NewV4().String()
-// 	_, err := db.Exec("INSERT INTO comments (postID, userName, commentText) VALUES (?, ?, ?,)", uuid, userName, commentText)
-// 	if err != nil {
-// 		log.Fatal(err.Error())
-// 	}
-// 	Person.PostAdded = true
+	fmt.Println("ADDING Comment")
+	uuid := uuid.NewV4().String()
+	_, err := db.Exec("INSERT INTO comments (postID, userName, commentText, likes, dislikes) VALUES (?, ?, ?,0,0)", uuid, userName, commentText)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	Person.PostAdded = true
 
-// }
+}
