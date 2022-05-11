@@ -22,6 +22,7 @@ type postDisplay struct {
 
 type commentStruct struct {
 	CommentID       string
+	CpostID string
 	CommentUsername string
 	CommentText     string
 	Likes           int
@@ -78,8 +79,9 @@ func postData(db *sql.DB) []postDisplay {
 		//Make []commentstruct to hold all the comments
 		commentSlc := []commentStruct{}
 		var tempComStruct commentStruct
+		fmt.Println("-------------------------------This line is the post ID: "+ u.PostID)
 
-		commentRow, errComs := db.Query("SELECT commentID, username, commentText, likes, dislikes FROM comments WHERE postID = ?", u.PostID)
+		commentRow, errComs := db.Query("SELECT commentID, postID, username, commentText, likes, dislikes FROM comments WHERE postID = ?", u.PostID)
 		if errComs != nil {
 			fmt.Println("Error selecting comment data")
 			log.Fatal(errComs.Error())
@@ -87,19 +89,23 @@ func postData(db *sql.DB) []postDisplay {
 		for commentRow.Next() {
 			err := commentRow.Scan(
 				&tempComStruct.CommentID,
+				&tempComStruct.CpostID,
 				&tempComStruct.CommentUsername,
 				&tempComStruct.CommentText,
 				&tempComStruct.Likes,
 				&tempComStruct.Dislikes,
+
 			)
 			tempComStruct.CookieChecker = Person.CookieChecker
 			if err != nil {
 				fmt.Println("Error scanning comments")
 				log.Fatal(err.Error())
 			}
+			fmt.Printf("\nCOMMENT STRUCT_____-------------------------------------%v\n\n",tempComStruct)
 			commentSlc = append(commentSlc, tempComStruct)
 		}
 		u.Comments = commentSlc
+		
 
 		//Append all post information to the finalarray
 		finalArray = append(finalArray, u)

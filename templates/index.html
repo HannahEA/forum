@@ -14,7 +14,7 @@
 
 <!--------------------------------------------------------------- <body> ----------------------------->
 
-<body class="Body" onload="Onload('{{.}}')">
+<body class="Body">
   <!------------------------------------------------- Navbar -->
   <nav class="Navbar">
     <div class="Navbar-buttons">
@@ -54,58 +54,22 @@
       <!-------------------------------------------------- Subject section footer ------------------------------>
       <div class="Comment-footer">
         <span class="Category">{{.PostCategory}}</span>
+
         <div class="LikeBtnDiv">
+          <!-- {{range .Comments}}
+          {{.CommentUsername}}
+          <br>
+          {{.CommentText}}
+          <br>
+          {{end}} -->
+          <!-- This is the pop up for the comment section -->
 
-          <div class="commentPopup" id="commentPopup-1">
-            <div class="commentOverlay"></div>
-            <div class="commentContent">
-              <div class="commentCloseBtn" onclick="togglePopup()">&times;</div>
-              <h1>Comments</h1>
-              <p>This is where all the comments will show</p>
-              {{range .Comments}}
-              <div id="CommentSectionPost">
-                <div>{{.CommentUsername}}</div>
-                <div>{{.CommentText}}</div>
-                <div id="likeBTNS">
-                  <div class="commentLikeBtnDiv">
-                    <span>{{.Likes}}</span>
-                    <span>
-                      <form action="/" method="POST" id="likeBTN">
-                        <label for="likeSubmit">Likes</label>
-                        {{if .CookieChecker}}
-                        <input type="submit" id="likeSubmit" name="commentlikeBtn" value="{{.CommentID}}" />
-                        {{end}}
-                      </form>
-                    </span>
-                  </div>
-                  <div class="commentLikeBtnDiv">
-                    <span>{{.Dislikes}}</span>
-                    <br />
 
-                    <form action="/" method="POST">
-                      <label for="dislikeSubmit">Dislikes</label>
-                      {{if .CookieChecker}}
-                      <input type="submit" id="dislikeSubmit" name="commentDislikeBtn" value="{{.CommentID}}"
-                        maxlength="300" />
-                      {{end}}
-                    </form>
 
-                  </div>
-                </div>
-              </div>
-              {{end}}
-              {{if .CookieChecker}}
-              <form action="/" method="POST">
-                <input type="textarea" placeholder="Comment" name="commentTxt" required><br>
-                <input type="submit" value="{{.PostID}}" name="commentSubmit">
-              </form>
-              {{end}}
+          <button onclick="commentBox('{{.PostID}}')">Comments</button>
 
-            </div>
-          </div>
-          <div>
-            <input type="button" id="postCommentsBtn" value="Comments" onclick="togglePopup()">
-          </div>
+
+
 
         </div>
         <div class="Left-Comment-footer" id="like-dislikeBtns">
@@ -134,7 +98,6 @@
                 <input type="submit" id="likeSubmit" name="likeBtn" value="{{.PostID}}" />
                 {{end}}
               </form>
-
             </span>
           </div>
           <!-- Make the commentbtn show a pop up with all related comments when clicked -->
@@ -142,20 +105,77 @@
       </div>
       <br />
     </div>
+    <div class="commentContent" id="{{.PostID}}">
+      <h1>Comments</h1>
+      <p>This is where all the comments will show</p>
+
+
+      {{range .Comments}}
+
+      <div class="comment-information">
+        <div class="individualComments">
+          {{.CommentUsername}}<br>
+          {{.CommentText}}
+        </div>
+
+        <div id="likeBTNS" class="individualComments">
+          <div class="commentLikeBtnDiv">
+            <span>{{.Likes}}</span>
+            <span>
+              <form action="/" method="POST" id="likeBTN">
+                <label for="likeSubmit">Likes</label>
+                {{if .CookieChecker}}
+                <input type="submit" id="likeSubmit" name="commentlikeBtn" value="{{.CommentID}}" />
+                {{end}}
+              </form>
+            </span>
+          </div>
+          <div class="commentLikeBtnDiv">
+            <span>{{.Dislikes}}</span>
+            <br />
+
+            <form action="/" method="POST">
+              <label for="dislikeSubmit">Dislikes</label>
+              {{if .CookieChecker}}
+              <input type="submit" id="dislikeSubmit" name="commentDislikeBtn" value="{{.CommentID}}" maxlength="300" />
+              {{end}}
+            </form>
+          </div>
+        </div>
+      </div>
+      {{end}}
+
+
+      {{if .CookieChecker}}
+      <div>
+        <form action="/" method="POST">
+          <input type="textarea" placeholder="Comment" name="commentTxt" required><br>
+          <input type="submit" value="{{.PostID}}" name="commentSubmit">
+        </form>
+      </div>
+      {{end}}
+
+
+    </div>
     {{end}}
   </div>
   <script>
-
-    function togglePopup() {
-      document.getElementById("commentPopup-1").classList.toggle("active");
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
+    function commentBox(id) {
+      var x = document.getElementById(id);
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
       }
     }
+
+
+    // When the user clicks anywhere outside of the modal, close it
+    // window.onclick = function (event) {
+    //   if (event.target == modal) {
+    //     modal.style.display = "none";
+    //   }
+    // }
     /*Resets form after submission to prevent the same value resubmitting*/
     if (window.history.replaceState) {
       window.history.replaceState(null, null, window.location.href);
