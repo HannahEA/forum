@@ -51,6 +51,7 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 	uuid := uuid.NewV4()
 
 	if Person.Accesslevel {
+		//The user is already logged in
 		Person.Attempted = false
 		tpl := template.Must(template.ParseGlob("templates/login.html"))
 		if err := tpl.Execute(w, Person); err != nil {
@@ -178,6 +179,24 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	dislikePostNum := r.FormValue("dislikeBtn")
 	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
 	DislikeButton(dislikePostNum, sqliteDatabase)
+
+	// comments
+	comment := r.FormValue("commentTxt")
+	commentPostID := r.FormValue("commentSubmit")
+	fmt.Printf("ADDING COMMENT: %v",commentPostID)
+	newComment(Person.Username, commentPostID, comment, sqliteDatabase)
+
+	//Comment likes
+	commentNum := r.FormValue("commentlikeBtn")
+	fmt.Printf("\n Comment LIKE BUTTON VALUE")
+	fmt.Println(commentNum)
+	CommentLikeButton(commentNum, sqliteDatabase)
+
+	//Dislike comments
+	commentDislike := r.FormValue("commentDislikeBtn")
+	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
+	CommentDislikeButton(commentDislike, sqliteDatabase)
+	
 
 	c1, err1 := r.Cookie("1st-cookie")
 

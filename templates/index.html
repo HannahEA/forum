@@ -38,13 +38,15 @@
       <br />
       <div class="post-header">
         <div class="chip">
-          <img src="img/avatar.png" alt="{{.Username}}" width="96" height="96">
+          <p>{{.Username}}</p>
         </div>
 
         <!-------------------------------------------------- Subject Post Section ------------------------------>
       </div>
       <!-- Subject Title -->
-      <div class="postTitle" id="postTitle">{{.TitleText}}</div>
+      <div class="postTitle" id="postTitle">
+        <p>{{.TitleText}}</p>
+      </div>
       <br />
       <!-- subject content goes into this location.-->
       <p id="postText">{{.PostText}}</p>
@@ -52,36 +54,90 @@
       <!-------------------------------------------------- Subject section footer ------------------------------>
       <div class="Comment-footer">
         <span class="Category">{{.PostCategory}}</span>
+        <div class="LikeBtnDiv">
+
+          <div class="commentPopup" id="commentPopup-1">
+            <div class="commentOverlay"></div>
+            <div class="commentContent">
+              <div class="commentCloseBtn" onclick="togglePopup()">&times;</div>
+              <h1>Comments</h1>
+              <p>This is where all the comments will show</p>
+              {{range .Comments}}
+              <div id="CommentSectionPost">
+                <div>{{.CommentUsername}}</div>
+                <div>{{.CommentText}}</div>
+                <div id="likeBTNS">
+                  <div class="commentLikeBtnDiv">
+                    <span>{{.Likes}}</span>
+                    <span>
+                      <form action="/" method="POST" id="likeBTN">
+                        <label for="likeSubmit">Likes</label>
+                        {{if .CookieChecker}}
+                        <input type="submit" id="likeSubmit" name="commentlikeBtn" value="{{.CommentID}}" />
+                        {{end}}
+                      </form>
+                    </span>
+                  </div>
+                  <div class="commentLikeBtnDiv">
+                    <span>{{.Dislikes}}</span>
+                    <br />
+
+                    <form action="/" method="POST">
+                      <label for="dislikeSubmit">Dislikes</label>
+                      {{if .CookieChecker}}
+                      <input type="submit" id="dislikeSubmit" name="commentDislikeBtn" value="{{.CommentID}}"
+                        maxlength="300" />
+                      {{end}}
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+              {{end}}
+              {{if .CookieChecker}}
+              <form action="/" method="POST">
+                <input type="textarea" placeholder="Comment" name="commentTxt" required><br>
+                <input type="submit" value="{{.PostID}}" name="commentSubmit">
+              </form>
+              {{end}}
+
+            </div>
+          </div>
+          <div>
+            <input type="button" id="postCommentsBtn" value="Comments" onclick="togglePopup()">
+          </div>
+
+        </div>
         <div class="Left-Comment-footer" id="like-dislikeBtns">
 
           <div class="LikeBtnDiv">
-            <span class="Category">{{.Dislikes}}</span>
+            <span>{{.Dislikes}}</span>
 
             <br />
-            {{if .CookieChecker}}
+
             <form action="/" method="POST">
               <label for="dislikeSubmit">Dislikes</label>
-              <input type="submit" id="dislikeSubmit" name="dislikeBtn" value="{{.PostID}}" />
+              {{if .CookieChecker}}
+              <input type="submit" id="dislikeSubmit" name="dislikeBtn" value="{{.PostID}}" maxlength="300" />
+              {{end}}
             </form>
-            {{end}}
+
           </div>
           <!-- Seperate divs so like buttons can be alligned -->
           <div class="LikeBtnDiv">
-            <span class="Category">{{.Likes}}</span>
+            <span>{{.Likes}}</span>
             <span>
-              {{if .CookieChecker}}
+
               <form action="/" method="POST" id="likeBTN">
                 <label for="likeSubmit">Likes</label>
+                {{if .CookieChecker}}
                 <input type="submit" id="likeSubmit" name="likeBtn" value="{{.PostID}}" />
+                {{end}}
               </form>
-              {{end}}
+
             </span>
           </div>
-          <div class="LikeBtnDiv">
-            <div>
-              <input type="button" id="postCommentsBtn" value="Comments">
-            </div>
-          </div>
+          <!-- Make the commentbtn show a pop up with all related comments when clicked -->
         </div>
       </div>
       <br />
@@ -89,6 +145,17 @@
     {{end}}
   </div>
   <script>
+
+    function togglePopup() {
+      document.getElementById("commentPopup-1").classList.toggle("active");
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
     /*Resets form after submission to prevent the same value resubmitting*/
     if (window.history.replaceState) {
       window.history.replaceState(null, null, window.location.href);

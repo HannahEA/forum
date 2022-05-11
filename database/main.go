@@ -91,8 +91,9 @@ func main() {
 	//Create the database for each user
 	_, errComments := sqliteDatabase.Exec(`
 		CREATE TABLE IF NOT EXISTS "comments" (
+			"commentID" TEXT,
 			"postID"	TEXT,
-			"username"	TEXT UNIQUE,
+			"username"	TEXT ,
 			"commentText"	TEXT,
 			"likes" INTEGER,
 			"dislikes" INTEGER
