@@ -36,10 +36,16 @@
     <div class="dropdown">
       <button class="dropbtn">Filter</button>
       <div class="dropdown-content">
-        <a href="/">All</a>
-        <a href="/Front-End">Front-End </a>
-        <a href="/Back-End">Back-End</a>
-        <a href="/FullStack">FullStack</a>
+        <form action="/" method="post">
+        <input type="submit" name="allfilter" value="All">
+        <input type="submit" name="FEfilter" value="FrontEnd">
+        <input type="submit" name="BEfilter" value="BackEnd">
+        <input type ="submit" name="FSfilter" value="FullStack">
+        {{if .MembersPost.CookieChecker}}
+        <input type="submit" name="myPosts" value="My Posts">
+        <input type="submit" name="likedPosts" value="Liked Posts">
+        {{end}}
+      </form>
       </div>
     </div>
     {{ range .PostingDisplay}}
@@ -75,7 +81,7 @@
             <br />
 
             <form action="/" method="POST">
-              <label for="dislikeSubmit">Dislikes {{.CookieChecker}}</label>
+              <label for="dislikeSubmit">Dislikes</label>
               {{if .CookieChecker}}
               <input type="submit" id="dislikeSubmit" name="dislikeBtn" value="{{.PostID}}" maxlength="300" />
               {{end}}

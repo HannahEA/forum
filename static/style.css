@@ -129,6 +129,27 @@
   margin-top: -11px;
 }
 
+.postSection::-webkit-scrollbar {
+  width: 10px;
+  height: 5px;
+  border-radius: 4px;
+}
+
+/* Track */
+.postSection::-webkit-scrollbar-track {
+  background: #ff000000;
+}
+
+/* Handle */
+.postSection::-webkit-scrollbar-thumb {
+  background: white;
+}
+
+/* Handle on hover */
+.postSection::-webkit-scrollbar-thumb:hover {
+  background: rgb(99, 99, 99);
+}
+
 .indPosts {
   display: flex;
   flex-direction: column;

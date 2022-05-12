@@ -79,6 +79,7 @@ func main() {
 		CREATE TABLE IF NOT EXISTS "liketable" (
 			user	TEXT,	
 			postID TEXT,
+			commentID TEXT,
 			reference INTEGER	
 		);
 	`)
@@ -109,7 +110,7 @@ func main() {
 	_, errCategories := sqliteDatabase.Exec(`
 		CREATE TABLE IF NOT EXISTS "categories" (
 			"postID"	TEXT,
-			"FrontEnd"	INTEGER ,
+			"FrontEnd"	INTEGER,
 			"BackEnd"	INTEGER,
 			"FullStack"	INTEGER		);
 	`)

@@ -183,7 +183,6 @@ type homePageStruct struct {
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(Person)
 	//Likes
 	postNum := r.FormValue("likeBtn")
 	fmt.Printf("\n LIKE BUTTON VALUE \n")
@@ -212,6 +211,123 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
 	CommentDislikeButton(commentDislike, sqliteDatabase)
 
+	//Make a button that gives a value depending on the filter button
+	FE := r.FormValue("FEfilter")
+	BE := r.FormValue("BEfilter")
+	FS := r.FormValue("FSfilter")
+	MyLikes := r.FormValue("likedPosts")
+	Created := r.FormValue("myPosts")
+
+	// all := r.FormValue("allfilter")
+	postSlc := []postDisplay{}
+	if FE == "FrontEnd" {
+		frontEndSlc := []string{}
+		//Create a query that gets the postIDs needed
+		frontEndRows, errGetIDs := sqliteDatabase.Query("SELECT postID from categories WHERE FrontEnd = 1")
+		if errGetIDs != nil {
+			fmt.Println("EEROR trying to SELECT the posts with front end ID")
+		}
+		for frontEndRows.Next() {
+			var GetIDs commentStruct
+
+			err := frontEndRows.Scan(
+				&GetIDs.CommentID,
+			)
+			if err != nil {
+				fmt.Println("Error Scanning through rows")
+			}
+
+			frontEndSlc = append(frontEndSlc, GetIDs.CommentID)
+		}
+		postSlc = PostGetter(frontEndSlc, sqliteDatabase)
+
+	} else if BE == "BackEnd" {
+		BackEndSlc := []string{}
+		//Create a query that gets the postIDs needed
+		backEndRows, errGetIDs := sqliteDatabase.Query("SELECT postID from categories WHERE BackEnd = 1")
+		if errGetIDs != nil {
+			fmt.Println("EEROR trying to SELECT the posts with front end ID")
+		}
+		for backEndRows.Next() {
+			var GetIDs commentStruct
+
+			err := backEndRows.Scan(
+				&GetIDs.CommentID,
+			)
+			if err != nil {
+				fmt.Println("Error Scanning through rows")
+			}
+
+			BackEndSlc = append(BackEndSlc, GetIDs.CommentID)
+		}
+		postSlc = PostGetter(BackEndSlc, sqliteDatabase)
+
+	} else if FS == "FullStack" {
+		FullStackSlc := []string{}
+		//Create a query that gets the postIDs needed
+		FullStackRows, errGetIDs := sqliteDatabase.Query("SELECT postID from categories WHERE FullStack = 1")
+		if errGetIDs != nil {
+			fmt.Println("EEROR trying to SELECT the posts with front end ID")
+		}
+		for FullStackRows.Next() {
+			var GetIDs commentStruct
+
+			err := FullStackRows.Scan(
+				&GetIDs.CommentID,
+			)
+			if err != nil {
+				fmt.Println("Error Scanning through rows")
+			}
+
+			FullStackSlc = append(FullStackSlc, GetIDs.CommentID)
+		}
+		postSlc = PostGetter(FullStackSlc, sqliteDatabase)
+
+	} else if MyLikes == "Liked Posts" {
+		likedSlc := []string{}
+		//Create a query that gets the postIDs needed
+		likedRows, errGetIDs := sqliteDatabase.Query("SELECT postID from liketable WHERE reference = 1 AND user = (?)", Person.Username)
+		if errGetIDs != nil {
+			fmt.Println("EEROR trying to SELECT the posts with front end ID")
+		}
+		for likedRows.Next() {
+			var GetIDs commentStruct
+
+			err := likedRows.Scan(
+				&GetIDs.CommentID,
+			)
+			if err != nil {
+				fmt.Println("Error Scanning through rows")
+			}
+
+			likedSlc = append(likedSlc, GetIDs.CommentID)
+		}
+		postSlc = PostGetter(likedSlc, sqliteDatabase)
+	} else if Created == "My Posts" {
+		myPostsSlc := []string{}
+		//Create a query that gets the postIDs needed
+		myPostsRows, errGetIDs := sqliteDatabase.Query("SELECT postID from posts WHERE userName = (?)", Person.Username)
+		if errGetIDs != nil {
+			fmt.Println("EEROR trying to SELECT the posts with front end ID")
+		}
+		for myPostsRows.Next() {
+			var GetIDs commentStruct
+
+			err := myPostsRows.Scan(
+				&GetIDs.CommentID,
+			)
+			if err != nil {
+				fmt.Println("Error Scanning through rows")
+			}
+
+			myPostsSlc = append(myPostsSlc, GetIDs.CommentID)
+		}
+		postSlc = PostGetter(myPostsSlc, sqliteDatabase)
+
+	}else {
+		postSlc = postData(sqliteDatabase)
+	}
+
 	c1, err1 := r.Cookie("1st-cookie")
 
 	if err1 == nil && !Person.Accesslevel {
@@ -233,8 +349,12 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		// not logged in yet
 		Person.CookieChecker = false
 	}
+
+	fmt.Printf("\n\n\n------------------------------------------------------------------Struct BEFORE: %v\n\n\n\n", Person)
+
+	fmt.Printf("\n\n\n------------------------------------------------------------------Struct AFTER: %v\n\n\n\n", Person)
 	//Initialise the homePAgeStruct to pass through multiple data types
-	x := homePageStruct{MembersPost: Person, PostingDisplay: postData(sqliteDatabase)}
+	x := homePageStruct{MembersPost: Person, PostingDisplay: postSlc}
 
 	tpl := template.Must(template.ParseGlob("templates/index.html"))
 
@@ -270,254 +390,4 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 	if err := tpl.Execute(w, ""); err != nil {
 		log.Fatal(err.Error())
 	}
-}
-
-func frontEnd(w http.ResponseWriter, r *http.Request) {
-	//Get all Posts specific to the frontend category
-	//Create a slice that will hold al postIDs that are of the front end category
-	frontEndSlc := []string{}
-	//Create a query that gets the postIDs needed
-	frontEndRows, errGetIDs := sqliteDatabase.Query("SELECT postID from categories WHERE FrontEnd = 1")
-	if errGetIDs != nil {
-		fmt.Println("EEROR trying to SELECT the posts with front end ID")
-	}
-	for frontEndRows.Next() {
-		var GetIDs commentStruct
-
-		err := frontEndRows.Scan(
-			&GetIDs.CommentID,
-		)
-		if err != nil {
-			fmt.Println("Error Scanning through rows")
-		}
-
-		frontEndSlc = append(frontEndSlc, GetIDs.CommentID)
-	}
-
-	//Likes
-	postNum := r.FormValue("likeBtn")
-	fmt.Printf("\n LIKE BUTTON VALUE \n")
-	fmt.Println(postNum)
-	LikeButton(postNum, sqliteDatabase)
-
-	//Dislikes
-	dislikePostNum := r.FormValue("dislikeBtn")
-	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
-	DislikeButton(dislikePostNum, sqliteDatabase)
-
-	// comments
-	comment := r.FormValue("commentTxt")
-	commentPostID := r.FormValue("commentSubmit")
-	fmt.Printf("ADDING COMMENT: %v", commentPostID)
-	newComment(Person.Username, commentPostID, comment, sqliteDatabase)
-
-	//Comment likes
-	commentNum := r.FormValue("commentlikeBtn")
-	fmt.Printf("\n Comment LIKE BUTTON VALUE")
-	fmt.Println(commentNum)
-	CommentLikeButton(commentNum, sqliteDatabase)
-
-	//Dislike comments
-	commentDislike := r.FormValue("commentDislikeBtn")
-	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
-	CommentDislikeButton(commentDislike, sqliteDatabase)
-
-	c1, err1 := r.Cookie("1st-cookie")
-
-	if err1 == nil && !Person.Accesslevel {
-		c1.MaxAge = -1
-		http.SetCookie(w, c1)
-	}
-
-	_, err := r.Cookie("1st-cookie")
-
-	if err != nil && Person.Accesslevel {
-		//logged in and on 2nd browser
-		Person.CookieChecker = false
-
-	} else if err == nil && Person.Accesslevel {
-		//Original browser
-		Person.CookieChecker = true
-
-	} else {
-		// not logged in yet
-		Person.CookieChecker = false
-	}
-	//Initialise the homePAgeStruct to pass through multiple data types
-	x := homePageStruct{MembersPost: Person, PostingDisplay: PostGetter(frontEndSlc, sqliteDatabase)}
-
-	tpl := template.Must(template.ParseGlob("templates/index.html"))
-
-	if err := tpl.Execute(w, x); err != nil {
-		log.Fatal(err.Error())
-	}
-
-}
-
-func BackEnd(w http.ResponseWriter, r *http.Request) {
-	//Get all Posts specific to the backend category
-	//Create a slice that will hold al postIDs that are of the back end category
-	BackEndSlc := []string{}
-	//Create a query that gets the postIDs needed
-	backEndRows, errGetIDs := sqliteDatabase.Query("SELECT postID from categories WHERE BackEnd = 1")
-	if errGetIDs != nil {
-		fmt.Println("EEROR trying to SELECT the posts with front end ID")
-	}
-	for backEndRows.Next() {
-		var GetIDs commentStruct
-
-		err := backEndRows.Scan(
-			&GetIDs.CommentID,
-		)
-		if err != nil {
-			fmt.Println("Error Scanning through rows")
-		}
-
-		BackEndSlc = append(BackEndSlc, GetIDs.CommentID)
-	}
-
-	//Likes
-	postNum := r.FormValue("likeBtn")
-	fmt.Printf("\n LIKE BUTTON VALUE \n")
-	fmt.Println(postNum)
-	LikeButton(postNum, sqliteDatabase)
-
-	//Dislikes
-	dislikePostNum := r.FormValue("dislikeBtn")
-	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
-	DislikeButton(dislikePostNum, sqliteDatabase)
-
-	// comments
-	comment := r.FormValue("commentTxt")
-	commentPostID := r.FormValue("commentSubmit")
-	fmt.Printf("ADDING COMMENT: %v", commentPostID)
-	newComment(Person.Username, commentPostID, comment, sqliteDatabase)
-
-	//Comment likes
-	commentNum := r.FormValue("commentlikeBtn")
-	fmt.Printf("\n Comment LIKE BUTTON VALUE")
-	fmt.Println(commentNum)
-	CommentLikeButton(commentNum, sqliteDatabase)
-
-	//Dislike comments
-	commentDislike := r.FormValue("commentDislikeBtn")
-	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
-	CommentDislikeButton(commentDislike, sqliteDatabase)
-
-	c1, err1 := r.Cookie("1st-cookie")
-
-	if err1 == nil && !Person.Accesslevel {
-		//The server has been restarted so the user should log in again
-		c1.MaxAge = -1
-		http.SetCookie(w, c1)
-
-	}
-	c, err := r.Cookie("1st-cookie")
-
-	if err != nil && Person.Accesslevel {
-		//logged in and on 2nd browser
-		Person.CookieChecker = false
-
-	} else if err == nil && Person.Accesslevel {
-		//Original browser
-		Person.CookieChecker = true
-
-	} else {
-		// not logged in yet
-		Person.CookieChecker = false
-	}
-
-	//Initialise the homePAgeStruct to pass through multiple data types
-	fmt.Printf("\n\n===============================================================================PERSON STRUCT BEFORE:   %v\n\n", Person)
-	x := homePageStruct{MembersPost: Person, PostingDisplay: PostGetter(BackEndSlc, sqliteDatabase)}
-fmt.Printf("\n\n===============================================================================PERSON STRUCT BEFORE:   %v\n\n", x.MembersPost)
-	tpl := template.Must(template.ParseGlob("templates/backend.html"))
-
-	if err := tpl.Execute(w, x); err != nil {
-		log.Fatal(err.Error())
-	}
-	fmt.Println("YOUR COOKIE:", c)
-
-}
-
-func FullStack(w http.ResponseWriter, r *http.Request) {
-	//Get all Posts specific to the frontend category
-	//Create a slice that will hold al postIDs that are of the front end category
-	FullStackSlc := []string{}
-	//Create a query that gets the postIDs needed
-	FullStackRows, errGetIDs := sqliteDatabase.Query("SELECT postID from categories WHERE FullStack = 1")
-	if errGetIDs != nil {
-		fmt.Println("EEROR trying to SELECT the posts with front end ID")
-	}
-	for FullStackRows.Next() {
-		var GetIDs commentStruct
-
-		err := FullStackRows.Scan(
-			&GetIDs.CommentID,
-		)
-		if err != nil {
-			fmt.Println("Error Scanning through rows")
-		}
-
-		FullStackSlc = append(FullStackSlc, GetIDs.CommentID)
-	}
-
-	//Likes
-	postNum := r.FormValue("likeBtn")
-	fmt.Printf("\n LIKE BUTTON VALUE \n")
-	fmt.Println(postNum)
-	LikeButton(postNum, sqliteDatabase)
-
-	//Dislikes
-	dislikePostNum := r.FormValue("dislikeBtn")
-	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
-	DislikeButton(dislikePostNum, sqliteDatabase)
-
-	// comments
-	comment := r.FormValue("commentTxt")
-	commentPostID := r.FormValue("commentSubmit")
-	fmt.Printf("ADDING COMMENT: %v", commentPostID)
-	newComment(Person.Username, commentPostID, comment, sqliteDatabase)
-
-	//Comment likes
-	commentNum := r.FormValue("commentlikeBtn")
-	fmt.Printf("\n Comment LIKE BUTTON VALUE")
-	fmt.Println(commentNum)
-	CommentLikeButton(commentNum, sqliteDatabase)
-
-	//Dislike comments
-	commentDislike := r.FormValue("commentDislikeBtn")
-	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
-	CommentDislikeButton(commentDislike, sqliteDatabase)
-
-	c1, err1 := r.Cookie("1st-cookie")
-
-	if err1 == nil && !Person.Accesslevel {
-		c1.MaxAge = -1
-		http.SetCookie(w, c1)
-	}
-
-	_, err := r.Cookie("1st-cookie")
-
-	if err != nil && Person.Accesslevel {
-		//logged in and on 2nd browser
-		Person.CookieChecker = false
-
-	} else if err == nil && Person.Accesslevel {
-		//Original browser
-		Person.CookieChecker = true
-
-	} else {
-		// not logged in yet
-		Person.CookieChecker = false
-	}
-	//Initialise the homePAgeStruct to pass through multiple data types
-	x := homePageStruct{MembersPost: Person, PostingDisplay: PostGetter(FullStackSlc, sqliteDatabase)}
-
-	tpl := template.Must(template.ParseGlob("templates/index.html"))
-
-	if err := tpl.Execute(w, x); err != nil {
-		log.Fatal(err.Error())
-	}
-
 }
