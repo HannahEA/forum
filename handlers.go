@@ -146,7 +146,21 @@ func Post(w http.ResponseWriter, r *http.Request) {
 }
 
 func postAdded(w http.ResponseWriter, r *http.Request) {
-	cat := r.FormValue("categories")
+	FEcat := r.FormValue("Frontend")
+	BEcat := r.FormValue("BackEnd")
+	FScat := r.FormValue("FullStack")
+	fmt.Printf("\nEMPTY SELECTION------------------------------------ Value: %v\n\n\n\n\n\n\n\n\n\n", FScat)
+	cat := FEcat + " " + BEcat + " " + FScat
+	//Loop through cat and remove any empty strings
+	c := []rune(cat)
+	category := []rune{}
+	for i := 0; i < len(c); i++ {
+		category = append(category, c[i])
+		if c[i] == ' ' && c[i]+1 == ' ' {
+			i++
+		}
+	}
+	cat = string(category)
 	title := r.FormValue("title")
 	post := r.FormValue("post")
 	newPost(Person.Username, cat, title, post, sqliteDatabase)
@@ -183,7 +197,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	// comments
 	comment := r.FormValue("commentTxt")
 	commentPostID := r.FormValue("commentSubmit")
-	fmt.Printf("ADDING COMMENT: %v",commentPostID)
+	fmt.Printf("ADDING COMMENT: %v", commentPostID)
 	newComment(Person.Username, commentPostID, comment, sqliteDatabase)
 
 	//Comment likes
@@ -196,7 +210,6 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	commentDislike := r.FormValue("commentDislikeBtn")
 	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
 	CommentDislikeButton(commentDislike, sqliteDatabase)
-	
 
 	c1, err1 := r.Cookie("1st-cookie")
 
