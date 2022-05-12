@@ -22,7 +22,7 @@
         {{if .MembersPost.CookieChecker}}
         <span><button id="homeBtn" class="Nav-Home-btn"><a href="/">Home</a></button></span>
         <span><button id="logoutBtn" class="Nav-logout-btn"><a href="/logout">Log Out</a></button></span>
-        <span><button id="newpostBtn" class="Nav-Newpost-btn"><a href="/new-post">Create a new post</a></button></span>
+        <span><button id="newpostBtn" class="Nav-Newpost-btn"><a href="/new-post">+Create Post</a></button></span>
         {{else}}
         <span><button id="homeBtn" class="Nav-Home-btn"><a href="/">Home</a></button></span>
         <span><button id="logBtn" class="Nav-log-btn"><a href="/log">Login</a></button></span>
@@ -31,8 +31,17 @@
       </div>
     </div>
   </nav>
-  <!-------------------------------------------------- Comments Section ------------------------------>
+  <!-------------------------------------------------- Post Section ------------------------------>
   <div class="postSection">
+    <div class="dropdown">
+      <button class="dropbtn">Filter</button>
+      <div class="dropdown-content">
+        <a href="/">All</a>
+        <a href="/Front-End">Front-End </a>
+        <a href="/Back-End">Back-End</a>
+        <a href="/FullStack">FullStack</a>
+      </div>
+    </div>
     {{ range .PostingDisplay}}
     <div class="indPosts">
       <br />
@@ -56,21 +65,7 @@
         <span class="Category">{{.PostCategory}}</span>
 
         <div class="LikeBtnDiv">
-          <!-- {{range .Comments}}
-          {{.CommentUsername}}
-          <br>
-          {{.CommentText}}
-          <br>
-          {{end}} -->
-          <!-- This is the pop up for the comment section -->
-
-
-
           <button onclick="commentBox('{{.PostID}}')">Comments</button>
-
-
-
-
         </div>
         <div class="Left-Comment-footer" id="like-dislikeBtns">
 
@@ -80,7 +75,7 @@
             <br />
 
             <form action="/" method="POST">
-              <label for="dislikeSubmit">Dislikes</label>
+              <label for="dislikeSubmit">Dislikes {{.CookieChecker}}</label>
               {{if .CookieChecker}}
               <input type="submit" id="dislikeSubmit" name="dislikeBtn" value="{{.PostID}}" maxlength="300" />
               {{end}}

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 
 	uuid "github.com/satori/go.uuid"
 )
@@ -22,7 +23,7 @@ type postDisplay struct {
 
 type commentStruct struct {
 	CommentID       string
-	CpostID string
+	CpostID         string
 	CommentUsername string
 	CommentText     string
 	Likes           int
@@ -46,6 +47,28 @@ func newPost(userName, category, title, post string, db *sql.DB) {
 	}
 	Person.PostAdded = true
 
+	//Add the post to the Category table with relevant categories selected
+	//Split the category string by Spaces to see which categories are selected
+	catSlc := strings.Split(category, " ")
+	feSelected := 0
+	beSelected := 0
+	fsSelected := 0
+	//Loop through categories if any element = Frontend backend or fullstack chane accordingly
+	for _, r := range catSlc {
+		if r == "FrontEnd" {
+			feSelected = 1
+		} else if r == "BackEnd" {
+			beSelected = 1
+		} else if r == "FullStack" {
+			fsSelected = 1
+		}
+	}
+
+	//Now add the relevant value to the category in the category table
+	_, errAddCats := db.Exec("INSERT INTO categories (postID, FrontEnd, BackEnd, FullStack) VALUES (?, ?, ?, ?)", uuid, feSelected, beSelected, fsSelected)
+	if errAddCats != nil {
+		fmt.Println("ERROR when adding into the category table")
+	}
 }
 
 func postData(db *sql.DB) []postDisplay {
@@ -79,7 +102,7 @@ func postData(db *sql.DB) []postDisplay {
 		//Make []commentstruct to hold all the comments
 		commentSlc := []commentStruct{}
 		var tempComStruct commentStruct
-		fmt.Println("-------------------------------This line is the post ID: "+ u.PostID)
+		fmt.Println("-------------------------------This line is the post ID: " + u.PostID)
 
 		commentRow, errComs := db.Query("SELECT commentID, postID, username, commentText, likes, dislikes FROM comments WHERE postID = ?", u.PostID)
 		if errComs != nil {
@@ -94,18 +117,16 @@ func postData(db *sql.DB) []postDisplay {
 				&tempComStruct.CommentText,
 				&tempComStruct.Likes,
 				&tempComStruct.Dislikes,
-
 			)
 			tempComStruct.CookieChecker = Person.CookieChecker
 			if err != nil {
 				fmt.Println("Error scanning comments")
 				log.Fatal(err.Error())
 			}
-			fmt.Printf("\nCOMMENT STRUCT_____-------------------------------------%v\n\n",tempComStruct)
+			fmt.Printf("\nCOMMENT STRUCT_____-------------------------------------%v\n\n", tempComStruct)
 			commentSlc = append(commentSlc, tempComStruct)
 		}
 		u.Comments = commentSlc
-		
 
 		//Append all post information to the finalarray
 		finalArray = append(finalArray, u)
@@ -581,4 +602,38 @@ func CommentDislikeButton(postID string, db *sql.DB) {
 			RefUpdate(-1, postID, sqliteDatabase)
 		}
 	}
+}
+
+//Make a function that takes in a slice of postIDs and returns a slice of poststructs with all the details
+
+func PostGetter(postIDSlc []string, db *sql.DB) []postDisplay {
+	//Create a slice of postdetail structs
+	finalArray := []postDisplay{}
+	//loop through the slice to get each postID
+	for _, r := range postIDSlc {
+		rows, errDetails := db.Query("SELECT postID, userName, category, likes, dislikes, title, post FROM posts WHERE postID = (?)", r)
+		if errDetails != nil {
+			fmt.Println("ERROR when selecting the information for specific posts (func POSTGETTER)")
+			log.Fatal(errDetails.Error())
+		}
+
+		for rows.Next() {
+			var postDetails postDisplay
+			err := rows.Scan(
+				&postDetails.PostID,
+				&postDetails.Username,
+				&postDetails.PostCategory,
+				&postDetails.Likes,
+				&postDetails.Dislikes,
+				&postDetails.TitleText,
+				&postDetails.PostText,
+			)
+			if err != nil {
+				fmt.Println("ERROR Scanning through the rows (func POSTGETTER)")
+				log.Fatal(err.Error())
+			}
+			finalArray = append(finalArray, postDetails)
+		}
+	}
+	return finalArray
 }

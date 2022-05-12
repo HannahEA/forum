@@ -36,6 +36,9 @@ func main() {
 	http.HandleFunc("/logout", LogOut)
 	http.HandleFunc("/new-post", Post)
 	http.HandleFunc("/post-added", postAdded)
+	http.HandleFunc("/Front-End", frontEnd)
+	http.HandleFunc("/Back-End", BackEnd)
+	http.HandleFunc("/FullStack", FullStack)
 	http.ListenAndServe(":8080", nil)
 
 }

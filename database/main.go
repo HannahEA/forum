@@ -74,7 +74,7 @@ func main() {
 		log.Fatal(errTbl.Error())
 	}
 
-		//Create the likes table
+	//Create the likes table
 	_, errLikes := sqliteDatabase.Exec(`
 		CREATE TABLE IF NOT EXISTS "liketable" (
 			user	TEXT,	
@@ -88,7 +88,7 @@ func main() {
 		log.Fatal(errPosts.Error())
 	}
 
-	//Create the database for each user
+	//Create the table for each user
 	_, errComments := sqliteDatabase.Exec(`
 		CREATE TABLE IF NOT EXISTS "comments" (
 			"commentID" TEXT,
@@ -103,5 +103,19 @@ func main() {
 	if errComments != nil {
 		fmt.Println("USER ERROR")
 		log.Fatal(errTbl.Error())
+	}
+
+	//Create the database for each user
+	_, errCategories := sqliteDatabase.Exec(`
+		CREATE TABLE IF NOT EXISTS "categories" (
+			"postID"	TEXT,
+			"FrontEnd"	INTEGER ,
+			"BackEnd"	INTEGER,
+			"FullStack"	INTEGER		);
+	`)
+
+	if errCategories != nil {
+		fmt.Println("Creating Category table ERROR")
+		log.Fatal(errCategories.Error())
 	}
 }

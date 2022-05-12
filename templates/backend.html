@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="./static/style.css">
+
+
+    <title>Home</title>
+</head>
+
+<!--------------------------------------------------------------- <body> ----------------------------->
+
+<body class="Body">
+    <!------------------------------------------------- Navbar -->
+    <nav class="Navbar">
+        <div class="Navbar-buttons">
+            <div id="Not_Login" class="Not_Login">
+                {{if .MembersPost.CookieChecker}}
+                <span><button id="homeBtn" class="Nav-Home-btn"><a href="/">Home</a></button></span>
+                <span><button id="logoutBtn" class="Nav-logout-btn"><a href="/logout">Log Out</a></button></span>
+                <span><button id="newpostBtn" class="Nav-Newpost-btn"><a href="/new-post">+Create
+                            Post</a></button></span>
+                {{else}}
+                <span><button id="homeBtn" class="Nav-Home-btn"><a href="/">Home</a></button></span>
+                <span><button id="logBtn" class="Nav-log-btn"><a href="/log">Login</a></button></span>
+                <span><button id="registerBtn" class="Nav-register-btn"><a href="/register">Register</a></button></span>
+                {{end}}
+            </div>
+        </div>
+    </nav>
+    <!-------------------------------------------------- Post Section ------------------------------>
+    <div class="postSection">
+        <div class="dropdown">
+            <button class="dropbtn">Filter</button>
+            <div class="dropdown-content">
+                <a href="/">All</a>
+                <a href="/Front-End">Front-End </a>
+                <a href="/Back-End">Back-End</a>
+                <a href="/FullStack">FullStack</a>
+            </div>
+        </div>
+        {{ range .PostingDisplay}}
+        <div class="indPosts">
+            <br />
+            <div class="post-header">
+                <div class="chip">
+                    <p>{{.Username}}</p>
+                </div>
+
+                <!-------------------------------------------------- Subject Post Section ------------------------------>
+            </div>
+            <!-- Subject Title -->
+            <div class="postTitle" id="postTitle">
+                <p>{{.TitleText}}</p>
+            </div>
+            <br />
+            <!-- subject content goes into this location.-->
+            <p id="postText">{{.PostText}}</p>
+            <br />
+            <!-------------------------------------------------- Subject section footer ------------------------------>
+            <div class="Comment-footer">
+                <span class="Category">{{.PostCategory}}</span>
+
+                <div class="LikeBtnDiv">
+                    <button onclick="commentBox('{{.PostID}}')">Comments</button>
+                </div>
+                <div class="Left-Comment-footer" id="like-dislikeBtns">
+
+                    <div class="LikeBtnDiv">
+                        <span>{{.Dislikes}}</span>
+
+                        <br />
+
+                        <form action="/Back-End" method="POST">
+                            <label for="dislikeSubmit">Dislikes {{.CookieChecker}}</label>
+                            {{if .CookieChecker}}
+                            <input type="submit" id="dislikeSubmit" name="dislikeBtn" value="{{.PostID}}"
+                                maxlength="300" />
+                            {{end}}
+                        </form>
+
+                    </div>
+                    <!-- Seperate divs so like buttons can be alligned -->
+                    <div class="LikeBtnDiv">
+                        <span>{{.Likes}}</span>
+                        <span>
+
+                            <form action="/Back-End" method="POST" id="likeBTN">
+                                <label for="likeSubmit">Likes</label>
+                                {{if .CookieChecker}}
+                                <input type="submit" id="likeSubmit" name="likeBtn" value="{{.PostID}}" />
+                                {{end}}
+                            </form>
+                        </span>
+                    </div>
+                    <!-- Make the commentbtn show a pop up with all related comments when clicked -->
+                </div>
+            </div>
+            <br />
+        </div>
+        <div class="commentContent" id="{{.PostID}}">
+            <h1>Comments</h1>
+            <p>This is where all the comments will show</p>
+
+
+            {{range .Comments}}
+
+            <div class="comment-information">
+                <div class="individualComments">
+                    {{.CommentUsername}}<br>
+                    {{.CommentText}}
+                </div>
+
+                <div id="likeBTNS" class="individualComments">
+                    <div class="commentLikeBtnDiv">
+                        <span>{{.Likes}}</span>
+                        <span>
+                            <form action="/Back-End" method="POST" id="likeBTN">
+                                <label for="likeSubmit">Likes</label>
+                                {{if .CookieChecker}}
+                                <input type="submit" id="likeSubmit" name="commentlikeBtn" value="{{.CommentID}}" />
+                                {{end}}
+                            </form>
+                        </span>
+                    </div>
+                    <div class="commentLikeBtnDiv">
+                        <span>{{.Dislikes}}</span>
+                        <br />
+
+                        <form action="/Back-End" method="POST">
+                            <label for="dislikeSubmit">Dislikes</label>
+                            {{if .CookieChecker}}
+                            <input type="submit" id="dislikeSubmit" name="commentDislikeBtn" value="{{.CommentID}}"
+                                maxlength="300" />
+                            {{end}}
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+
+
+            {{if .CookieChecker}}
+            <div>
+                <form action="/Back-End" method="POST">
+                    <input type="textarea" placeholder="Comment" name="commentTxt" required><br>
+                    <input type="submit" value="{{.PostID}}" name="commentSubmit">
+                </form>
+            </div>
+            {{end}}
+
+
+        </div>
+        {{end}}
+    </div>
+    <script>
+        function commentBox(id) {
+            var x = document.getElementById(id);
+            if (x.style.display === "flex") {
+                x.style.display = "none";
+            } else {
+                x.style.display = "flex";
+            }
+        }
+
+
+        // When the user clicks anywhere outside of the modal, close it
+        // window.onclick = function (event) {
+        //   if (event.target == modal) {
+        //     modal.style.display = "none";
+        //   }
+        // }
+        /*Resets form after submission to prevent the same value resubmitting*/
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
+</body>
+
+</html>
