@@ -36,7 +36,7 @@
     <div class="dropdown">
       <button class="dropbtn">Filter</button>
       <div class="dropdown-content">
-        <form action="/" method="post">
+        <form action="/" method="POST">
           <input type="submit" name="allfilter" value="All">
           <input type="submit" name="FEfilter" value="FrontEnd">
           <input type="submit" name="BEfilter" value="BackEnd">
@@ -64,7 +64,10 @@
       <br />
       <span class="postTitle" id="postCat">{{.PostCategory}}</span>
       <!-- subject content goes into this location.-->
-      <p id="postText">{{.PostText}}</p>
+      <div class="postTextDiv">
+        <p id="postText">{{.PostText}}</p>
+      </div>
+      
       <br />
       <!-------------------------------------------------- Subject section footer ------------------------------>
       <div class="Comment-footer">
@@ -149,7 +152,7 @@
       {{if .CookieChecker}}
       <div>
         <form action="/" method="POST">
-          <input type="textarea" placeholder="Comment" name="commentTxt" required><br>
+          <input type="textarea" placeholder="Comment" name="commentTxt" required pattern=".*\S+.*"><br>
           <input type="submit" value="{{.PostID}}" name="commentSubmit">
         </form>
       </div>

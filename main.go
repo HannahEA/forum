@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"text/template"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -36,17 +35,6 @@ func main() {
 	http.HandleFunc("/logout", LogOut)
 	http.HandleFunc("/new-post", Post)
 	http.HandleFunc("/post-added", postAdded)
-	// http.HandleFunc("/Front-End", frontEnd)
-	// http.HandleFunc("/Back-End", BackEnd)
-	// http.HandleFunc("/FullStack", FullStack)
 	http.ListenAndServe(":8080", nil)
 
-}
-
-func Executer(w http.ResponseWriter, file string) {
-	tpl := template.Must(template.ParseGlob(file))
-
-	if err := tpl.Execute(w, ""); err != nil {
-		log.Fatal(err.Error())
-	}
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"text/template"
 
@@ -28,24 +27,27 @@ import (
 // }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-
-	// if Person.Accesslevel {
-	// 	Executer(w, "templates/accessDenied.html")
-	// } else {
-	// 	tpl := template.Must(template.ParseGlob("templates/login.html"))
-	// 	if err := tpl.Execute(w, Person); err != nil {
-	// 		log.Fatal(err.Error())
-	// 	}
-	// }
+	urlError:= urlError(w,r)
+	if urlError {
+		return
+	}
 
 	tpl := template.Must(template.ParseGlob("templates/login.html"))
 	if err := tpl.Execute(w, Person); err != nil {
-		log.Fatal(err.Error())
+		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
 }
 
 func LoginResult(w http.ResponseWriter, r *http.Request) {
+	urlError:= urlError(w,r)
+	if urlError {
+		return
+	}
 	Person.Attempted = true
+	if r.Method != "POST" {
+		http.Error(w, "400 Status Bad Request", http.StatusBadRequest)
+		return
+	}
 	email := r.FormValue("email")
 	pass := r.FormValue("password")
 	uuid := uuid.NewV4()
@@ -57,7 +59,7 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 		Person.Attempted = false
 		tpl := template.Must(template.ParseGlob("templates/login.html"))
 		if err := tpl.Execute(w, Person); err != nil {
-			log.Fatal(err.Error())
+			http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 		}
 	} else if ValidEmail(email, sqliteDatabase) {
 		if LoginValidator(email, pass, sqliteDatabase) {
@@ -86,31 +88,43 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 			x := homePageStruct{MembersPost: Person, PostingDisplay: postData(sqliteDatabase)}
 			tpl := template.Must(template.ParseGlob("templates/index.html"))
 			if err := tpl.Execute(w, x); err != nil {
-				log.Fatal(err.Error())
+				http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 			}
 		} else {
 			tpl := template.Must(template.ParseGlob("templates/login.html"))
 			if err := tpl.Execute(w, Person); err != nil {
-				log.Fatal(err.Error())
+				http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 			}
 		}
 
 	} else {
 		tpl := template.Must(template.ParseGlob("templates/login.html"))
 		if err := tpl.Execute(w, Person); err != nil {
-			log.Fatal(err.Error())
+			http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 		}
 	}
 }
 
 func registration(w http.ResponseWriter, r *http.Request) {
+	urlError:= urlError(w,r)
+	if urlError {
+		return
+	}
 	tpl := template.Must(template.ParseGlob("templates/register.html"))
 	if err := tpl.Execute(w, Person); err != nil {
-		log.Fatal(err.Error())
+		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
 }
 
 func registration2(w http.ResponseWriter, r *http.Request) {
+	urlError:= urlError(w,r)
+	if urlError {
+		return
+	}
+	if r.Method != "POST" {
+		http.Error(w, "400 Status Bad Request", http.StatusBadRequest)
+		return
+	}
 
 	userN := r.FormValue("username")
 	email := r.FormValue("email")
@@ -123,7 +137,7 @@ func registration2(w http.ResponseWriter, r *http.Request) {
 
 	if exist {
 		if err := tpl.Execute(w, Person); err != nil {
-			log.Fatal(err.Error())
+			http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 		}
 
 	} else {
@@ -131,7 +145,7 @@ func registration2(w http.ResponseWriter, r *http.Request) {
 		newUser(email, userN, pass, sqliteDatabase)
 
 		if err := tpl.Execute(w, Person); err != nil {
-			log.Fatal(err.Error())
+			http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 		}
 
 	}
@@ -139,15 +153,27 @@ func registration2(w http.ResponseWriter, r *http.Request) {
 }
 
 func Post(w http.ResponseWriter, r *http.Request) {
+	urlError:= urlError(w,r)
+	if urlError {
+		return
+	}
 	Person.PostAdded = false
 	tpl := template.Must(template.ParseGlob("templates/newPost.html"))
 	if err := tpl.Execute(w, Person); err != nil {
-		log.Fatal(err.Error())
+		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
 
 }
 
 func postAdded(w http.ResponseWriter, r *http.Request) {
+	urlError:= urlError(w,r)
+	if urlError {
+		return
+	}
+	if r.Method != "POST" {
+		http.Error(w, "400 Status Bad Request", http.StatusBadRequest)
+		return
+	}
 	FEcat := r.FormValue("Frontend")
 	BEcat := r.FormValue("BackEnd")
 	FScat := r.FormValue("FullStack")
@@ -174,7 +200,7 @@ func postAdded(w http.ResponseWriter, r *http.Request) {
 	tpl := template.Must(template.ParseGlob("templates/index.html"))
 
 	if err := tpl.Execute(w, x); err != nil {
-		log.Fatal(err.Error())
+		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
 
 }
@@ -185,6 +211,15 @@ type homePageStruct struct {
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
+	urlError:= urlError(w,r)
+	if urlError {
+		return
+	}
+	if r.Method != "POST" && r.Method!= "GET" {
+		fmt.Fprint(w, r.Method + "\n")
+		http.Error(w, "400 Status Bad Request", http.StatusBadRequest)
+		return
+	}
 	//Likes
 	postNum := r.FormValue("likeBtn")
 	fmt.Printf("\n LIKE BUTTON VALUE \n")
@@ -361,13 +396,16 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	tpl := template.Must(template.ParseGlob("templates/index.html"))
 
 	if err := tpl.Execute(w, x); err != nil {
-		log.Fatal(err.Error())
+		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
 	fmt.Println("YOUR COOKIE:", c)
 }
 
 func LogOut(w http.ResponseWriter, r *http.Request) {
-
+	urlError:= urlError(w,r)
+	if urlError {
+		return
+	}
 	c, err := r.Cookie("1st-cookie")
 
 	if err != nil {
@@ -390,6 +428,15 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 	tpl := template.Must(template.ParseGlob("templates/logout.html"))
 
 	if err := tpl.Execute(w, ""); err != nil {
-		log.Fatal(err.Error())
+		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
+}
+
+func urlError(w http.ResponseWriter, r *http.Request) bool {
+	p := r.URL.Path
+	if !((p == "/") || (p == "/log") || (p == "/login") || (p == "/register") || (p == "/registration") || (p == "/logout") || (p == "/new-post") || (p == "/post-added")) {
+		http.Error(w, "404 Status not found", http.StatusNotFound)
+		return true
+	}
+	return false
 }

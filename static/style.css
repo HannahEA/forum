@@ -6,6 +6,10 @@
   /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
+* {
+  font-family: Work Sans;
+}
+
 .Body {
   display: flex;
   flex-direction: row;
@@ -69,13 +73,13 @@
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #0fc76c;
 }
 
 /* DROPDOWN FILTER*/
 /* Dropdown Button */
 .dropbtn {
-  background-color: #939393;
+  background-color: #0fc76c;
   color: white;
   padding: 16px;
   font-size: 16px;
@@ -93,7 +97,7 @@
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #939393;
+  background-color: #0fc76c;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -119,7 +123,7 @@
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
-  background-color: #777676;
+  background-color: #0fc76c;
 }
 
 .postSection {
@@ -236,12 +240,12 @@
   border-radius: 10%;
   margin-right: 6px;
   margin-left: 6px;
- 
-font-family: 'Work Sans', sans-serif;
+
+  font-family: 'Work Sans', sans-serif;
   font-weight: bold;
   font-size: 2.5vh;
-  top:15%;
- 
+  top: 15%;
+
 }
 
 .Left-Comment-footer {
@@ -270,7 +274,8 @@ font-family: 'Work Sans', sans-serif;
   top: 0px;
   width: 100vw;
   overflow: hidden;
-  background: #939393;
+  background: #0fc76c;
+  border-color: #0fc76c;
   /* Border */
 }
 
@@ -298,7 +303,7 @@ font-family: 'Work Sans', sans-serif;
   left: 1204px;
   top: 23px;
 
-  background: #6e6868;
+  background: #0fc76c;
   border-radius: 5px;
 }
 
@@ -313,7 +318,7 @@ font-family: 'Work Sans', sans-serif;
   top: 23px;
 
   /* Border */
-  background: #eaeaea;
+  background: #0fc76c;
   border-radius: 5px;
 }
 
@@ -532,9 +537,10 @@ input {
 #postText {
   font-family: 'Work Sans', sans-serif;
   font-weight: bold;
-  border: 3px;
+  border: 0.5 vh;
   border-style: solid;
   border-color: black;
+  height: inherit -2px;
   padding: 1em;
   border-radius: 5px;
   position: absolute;
@@ -574,3 +580,4 @@ input {
   font-weight: bold;
   font-size: 1.5vw;
 }
+
