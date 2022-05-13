@@ -50,7 +50,9 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 	pass := r.FormValue("password")
 	uuid := uuid.NewV4()
 
-	if Person.Accesslevel {
+	if Person.Accesslevel && Person.CookieChecker {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	} else if Person.Accesslevel {
 		//The user is already logged in
 		Person.Attempted = false
 		tpl := template.Must(template.ParseGlob("templates/login.html"))
@@ -324,7 +326,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		}
 		postSlc = PostGetter(myPostsSlc, sqliteDatabase)
 
-	}else {
+	} else {
 		postSlc = postData(sqliteDatabase)
 	}
 
