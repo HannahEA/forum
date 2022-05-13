@@ -1,8 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Trade+Winds&family=Work+Sans:wght@300;600&display=swap');
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;700&display=swap');
+  /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
 .Body {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  background: #2b2b2b;
+  background: #d6d4d4;
   height: 100vh;
   width: 100vw;
   overflow-x: hidden;
@@ -51,7 +59,7 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #2b2b2b;
+  background: #b1b1b100;
 }
 
 /* Handle */
@@ -115,9 +123,8 @@
 }
 
 .postSection {
-  background: #2b2b2b;
-  margin-left: 18vw;
-  width: 60vw;
+  background: #fffafa;
+  width: 80vw;
   height: 95vh;
   top: 6vh;
   flex-direction: column;
@@ -142,7 +149,7 @@
 
 /* Handle */
 .postSection::-webkit-scrollbar-thumb {
-  background: white;
+  background: rgb(113, 113, 113);
 }
 
 /* Handle on hover */
@@ -155,22 +162,33 @@
   flex-direction: column;
   align-items: flex-start;
   padding: 5px 3px;
+  position: relative;
+  z-index: 0;
 
 
-  width: 54vw;
+  width: 65vw;
   min-height: 50vh;
 
   background: #ffffff;
   /* Border */
-  border: 1px solid #47469f;
+  /* border: 1px solid #47469f;
   box-sizing: border-box;
   /* Shadow */
-  box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.15);
-  border-radius: 15px;
+  /* box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 15px; */
 
   margin-right: auto;
   margin-left: auto;
   margin-top: 3vh;
+  transform:
+    perspective(75em);
+  box-shadow:
+    rgba(22, 31, 39, 0.42) 0px 60px 123px -25px,
+    rgba(19, 26, 32, 0.08) 0px 35px 75px -35px;
+  border-radius: 10px;
+  border: 1px solid;
+  border-color:
+    rgb(213, 220, 226) rgb(213, 220, 226) rgb(184, 194, 204);
 }
 
 .Comment-header {
@@ -189,6 +207,9 @@
   width: 53vw;
   height: 3vh;
   color: #888;
+  position: absolute;
+  bottom: 4vh;
+
   /* background: #07aeeb; */
 }
 
@@ -209,12 +230,18 @@
   border-radius: 50%;
 }
 
-.Category {
+#postCat {
   background-color: rgb(226, 226, 226);
   padding: 5px 10px;
   border-radius: 10%;
   margin-right: 6px;
   margin-left: 6px;
+ 
+font-family: 'Work Sans', sans-serif;
+  font-weight: bold;
+  font-size: 2.5vh;
+  top:15%;
+ 
 }
 
 .Left-Comment-footer {
@@ -458,8 +485,8 @@ input {
 
 .LikeBtnDiv {
   float: right;
-  margin-right: 10px;
-  margin-bottom: 40px;
+  margin-right: 1.25vh;
+  margin-bottom: 5vh;
 }
 
 /* STYLING THE COMMENT SECTION */
@@ -469,6 +496,7 @@ input {
   width: 100px;
   position: relative;
   margin-top: 12px;
+  float: right;
 }
 
 .commentContent {
@@ -478,12 +506,12 @@ input {
   display: none;
 
 
-  width: 54vw;
+  width: 65vw;
   min-height: 50vh;
 
-  background: #ffffff;
+  background-color: #ffffff;
   /* Border */
-  border: 1px solid #47469f;
+  border: 1px solid #47469f00;
   box-sizing: border-box;
   /* Shadow */
   box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.15);
@@ -492,7 +520,7 @@ input {
   margin-right: auto;
   margin-left: auto;
   overflow-y: scroll;
-
+  z-index: 1;
 
 
 }
@@ -502,17 +530,33 @@ input {
 /* STYLING the main posts */
 
 #postText {
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: 'Work Sans', sans-serif;
+  font-weight: bold;
   border: 3px;
   border-style: solid;
   border-color: black;
   padding: 1em;
+  border-radius: 5px;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  margin-top: 5vh;
 
 }
 
 .postTitle {
-  font: bolder;
-  text-align: center;
+  font-weight: 700;
+  font-size: 25px;
+  font-family: 'Work Sans', sans-serif;
+
+  position: absolute;
+
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  margin-top: 5vh;
+
+
 }
 
 .postHeader {
@@ -523,4 +567,10 @@ input {
   display: flex;
   justify-content: center;
 
+}
+
+.usernamePost {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: bold;
+  font-size: 1.5vw;
 }

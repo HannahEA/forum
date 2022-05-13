@@ -37,15 +37,15 @@
       <button class="dropbtn">Filter</button>
       <div class="dropdown-content">
         <form action="/" method="post">
-        <input type="submit" name="allfilter" value="All">
-        <input type="submit" name="FEfilter" value="FrontEnd">
-        <input type="submit" name="BEfilter" value="BackEnd">
-        <input type ="submit" name="FSfilter" value="FullStack">
-        {{if .MembersPost.CookieChecker}}
-        <input type="submit" name="myPosts" value="My Posts">
-        <input type="submit" name="likedPosts" value="Liked Posts">
-        {{end}}
-      </form>
+          <input type="submit" name="allfilter" value="All">
+          <input type="submit" name="FEfilter" value="FrontEnd">
+          <input type="submit" name="BEfilter" value="BackEnd">
+          <input type="submit" name="FSfilter" value="FullStack">
+          {{if .MembersPost.CookieChecker}}
+          <input type="submit" name="myPosts" value="My Posts">
+          <input type="submit" name="likedPosts" value="Liked Posts">
+          {{end}}
+        </form>
       </div>
     </div>
     {{ range .PostingDisplay}}
@@ -53,24 +53,23 @@
       <br />
       <div class="post-header">
         <div class="chip">
-          <p>{{.Username}}</p>
+          <p class="usernamePost">{{.Username}}</p>
         </div>
 
         <!-------------------------------------------------- Subject Post Section ------------------------------>
       </div>
       <!-- Subject Title -->
-      <div class="postTitle" id="postTitle">
-        <p>{{.TitleText}}</p>
-      </div>
+
+      <p class="postTitle" id="postTitle">{{.TitleText}}</p>
       <br />
+      <span class="postTitle" id="postCat">{{.PostCategory}}</span>
       <!-- subject content goes into this location.-->
       <p id="postText">{{.PostText}}</p>
       <br />
       <!-------------------------------------------------- Subject section footer ------------------------------>
       <div class="Comment-footer">
-        <span class="Category">{{.PostCategory}}</span>
 
-        <div class="LikeBtnDiv">
+        <div class="commentBtnDiv">
           <button onclick="commentBox('{{.PostID}}')">Comments</button>
         </div>
         <div class="Left-Comment-footer" id="like-dislikeBtns">
@@ -78,10 +77,10 @@
           <div class="LikeBtnDiv">
             <span>{{.Dislikes}}</span>
 
-            <br />
+        
 
             <form action="/" method="POST">
-              <label for="dislikeSubmit">Dislikes</label>
+              <label for="dislikeSubmit">dislikes</label>
               {{if .CookieChecker}}
               <input type="submit" id="dislikeSubmit" name="dislikeBtn" value="{{.PostID}}" maxlength="300" />
               {{end}}
