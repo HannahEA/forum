@@ -19,6 +19,7 @@ type userDetails struct {
 	CookieChecker          bool
 	Attempted              bool
 	RegistrationAttempted  bool
+	FailedRegister         bool
 	SuccessfulRegistration bool
 	PostAdded              bool
 }

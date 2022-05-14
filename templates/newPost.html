@@ -10,28 +10,50 @@
 </head>
 
 <body>
-    <div>
+    <nav class="Navbar">
+        <div class="Navbar-buttons">
+            <div id="Not_Login" class="Not_Login">
+                {{if .CookieChecker}}
+                <span><button id="homeBtn" class="navBarbtns"><a href="/">Home</a></button></span>
+                <span><button id="logoutBtn" class="navBarbtns"><a href="/logout">Log Out</a></button></span>
+                <span><button id="newpostBtn" class="navBarbtns"><a href="/new-post">+Create Post</a></button></span>
+                {{else}}
+                <span><button id="homeBtn" class="navBarbtns"><a href="/">Home</a></button></span>
+                <span><button id="logBtn" class="navBarbtns"><a href="/log">Login</a></button></span>
+                <span><button id="registerBtn" class="navBarbtns"><a href="/register">Register</a></button></span>
+                {{end}}
+            </div>
+        </div>
+    </nav>
+    <div class="newPostinputs">
         <form method="POST" action="/post-added">
             <br>
-            <input type="textarea" placeholder="title" name="title" required pattern=".*\S+.*"><br>
+            <div class="center">
+                <input type="textarea" placeholder="Title" name="title" required pattern=".*\S+.*" maxlenght="40"><br>
+                <div class="center">
+                    <label for="categories" class="filterLabels">Select a Category:</label><br>
+                    <div class="center" id="check">
+                        <span>
+                        <LABEL FOR="FE" class="filterLabels">FrontEnd</LABEL>
+                        <INPUT TYPE="Checkbox" Name="Frontend" class="center" id="FE" Value="FrontEnd" checked>
+                        </span>
+                    </div>
 
-            <label for="categories">Select a Category:</label><br>
-           
-                <LABEL FOR="FE">FrontEnd</LABEL>
-                <INPUT TYPE="Checkbox" Name="Frontend" ID="FE" Value="FrontEnd" checked><br>
-
-                <LABEL FOR="BE"> BackEnd </LABEL>
-                <INPUT TYPE="Checkbox" Name="BackEnd" ID="BE" Value="BackEnd"><br>
-                <LABEL FOR="FS"> FullStack </LABEL>
-                <INPUT TYPE="Checkbox" Name="FullStack" ID="FS" Value="FullStack"><br>
-            
-            <br>
-            <br>
-            <input type="text" name="post" placeholder="Enter your text here" required pattern=".*\S+.*">
-
-            <br>
-            <input type="submit" id="postSubmit" value="Submit">
-
+                    <div class="center">
+                        <LABEL FOR="BE" class="filterLabels"> BackEnd </LABEL>
+                        <INPUT TYPE="Checkbox" Name="BackEnd" id="BE" Value="BackEnd"><br>
+                    </div>
+                    <div class="center">
+                        <LABEL FOR="FS" class="filterLabels"> FullStack </LABEL>
+                        <INPUT TYPE="Checkbox" Name="FullStack" id="FS" Value="FullStack"><br>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <input type="text" name="post" placeholder="Enter your post!" required pattern=".*\S+.*">
+                <br>
+                <input type="submit" id="postSubmit" value="Submit">
+            </div>
         </form>
 
     </div>

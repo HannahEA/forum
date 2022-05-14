@@ -27,7 +27,7 @@ import (
 // }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	urlError:= urlError(w,r)
+	urlError := urlError(w, r)
 	if urlError {
 		return
 	}
@@ -39,12 +39,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginResult(w http.ResponseWriter, r *http.Request) {
-	urlError:= urlError(w,r)
+	urlError := urlError(w, r)
 	if urlError {
 		return
 	}
 	Person.Attempted = true
-	if r.Method != "POST" {
+	if r.Method != "POST" && r.Method != "GET" {
+		fmt.Fprint(w, r.Method+"\n")
 		http.Error(w, "400 Status Bad Request", http.StatusBadRequest)
 		return
 	}
@@ -106,22 +107,26 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 }
 
 func registration(w http.ResponseWriter, r *http.Request) {
-	urlError:= urlError(w,r)
+	urlError := urlError(w, r)
 	if urlError {
 		return
 	}
+	Person.RegistrationAttempted=false
 	tpl := template.Must(template.ParseGlob("templates/register.html"))
 	if err := tpl.Execute(w, Person); err != nil {
+		fmt.Println(err.Error())
 		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
 }
 
 func registration2(w http.ResponseWriter, r *http.Request) {
-	urlError:= urlError(w,r)
+	Person.SuccessfulRegistration = false
+	urlError := urlError(w, r)
 	if urlError {
 		return
 	}
-	if r.Method != "POST" {
+	if r.Method != "POST" && r.Method != "GET" {
+		fmt.Fprint(w, r.Method+"\n")
 		http.Error(w, "400 Status Bad Request", http.StatusBadRequest)
 		return
 	}
@@ -136,6 +141,7 @@ func registration2(w http.ResponseWriter, r *http.Request) {
 	tpl := template.Must(template.ParseGlob("templates/register.html"))
 
 	if exist {
+		Person.FailedRegister = true
 		if err := tpl.Execute(w, Person); err != nil {
 			http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 		}
@@ -153,7 +159,7 @@ func registration2(w http.ResponseWriter, r *http.Request) {
 }
 
 func Post(w http.ResponseWriter, r *http.Request) {
-	urlError:= urlError(w,r)
+	urlError := urlError(w, r)
 	if urlError {
 		return
 	}
@@ -166,11 +172,12 @@ func Post(w http.ResponseWriter, r *http.Request) {
 }
 
 func postAdded(w http.ResponseWriter, r *http.Request) {
-	urlError:= urlError(w,r)
+	urlError := urlError(w, r)
 	if urlError {
 		return
 	}
-	if r.Method != "POST" {
+	if r.Method != "POST" && r.Method != "GET" {
+		fmt.Fprint(w, r.Method+"\n")
 		http.Error(w, "400 Status Bad Request", http.StatusBadRequest)
 		return
 	}
@@ -211,12 +218,12 @@ type homePageStruct struct {
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	urlError:= urlError(w,r)
+	urlError := urlError(w, r)
 	if urlError {
 		return
 	}
-	if r.Method != "POST" && r.Method!= "GET" {
-		fmt.Fprint(w, r.Method + "\n")
+	if r.Method != "POST" && r.Method != "GET" {
+		fmt.Fprint(w, r.Method+"\n")
 		http.Error(w, "400 Status Bad Request", http.StatusBadRequest)
 		return
 	}
@@ -402,15 +409,20 @@ func Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogOut(w http.ResponseWriter, r *http.Request) {
-	urlError:= urlError(w,r)
+	urlError := urlError(w, r)
 	if urlError {
 		return
 	}
+
+	if !Person.Accesslevel {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
 	c, err := r.Cookie("1st-cookie")
 
 	if err != nil {
 		fmt.Println("Problem logging out with cookie")
-
 	}
 
 	c.MaxAge = -1

@@ -78,7 +78,7 @@
         <div class="Left-Comment-footer" id="like-dislikeBtns">
 
           <div class="LikeBtnDiv">
-            <span>{{.Dislikes}}</span>
+            <span><a id="likeCount">{{.Dislikes}}</a></span>
 
 
 
@@ -93,7 +93,7 @@
           </div>
           <!-- Seperate divs so like buttons can be alligned -->
           <div class="LikeBtnDiv">
-            <span>{{.Likes}}</span>
+            <span><a id="likeCount">{{.Likes}}</a></span>
             <span>
 
               <form action="/" method="POST" id="likeBTN">
@@ -118,34 +118,34 @@
 
       <div class="comment-information">
         <div class="individualComments">
-          {{.CommentUsername}}<br>
-          {{.CommentText}}
+          <p><a id="commentUsername">{{.CommentUsername}}</a> {{.CommentText}}</p>
+
         </div>
 
-        <div id="likeBTNS" class="individualComments">
-          <div class="commentLikeBtnDiv">
-            <span>{{.Likes}}</span>
-            <span>
-              <form action="/" method="POST" id="likeBTN">
-                <label for="likeSubmit" class="likeLabel">&#9989;</label>
-                {{if .CookieChecker}}
-                <input type="submit" id="likeSubmit" name="commentlikeBtn" value="{{.CommentID}}" />
-                {{end}}
-              </form>
-            </span>
-          </div>
-          <div class="commentLikeBtnDiv">
-            <span>{{.Dislikes}}</span>
-            <br />
 
-            <form action="/" method="POST">
-              <label for="dislikeSubmit" class="likeLabel">&#10060;</label>
+        <div class="commentLikeBtnDiv">
+          <span><a id="likeCount">{{.Likes}}</a></span>
+          <span>
+            <form action="/" method="POST" id="likeBTN">
+              <label for="likeSubmit" class="likeLabel">&#9989;</label>
               {{if .CookieChecker}}
-              <input type="submit" id="dislikeSubmit" name="commentDislikeBtn" value="{{.CommentID}}" maxlength="300" />
+              <input type="submit" id="likeSubmit" name="commentlikeBtn" value="{{.CommentID}}" />
               {{end}}
             </form>
-          </div>
+          </span>
         </div>
+        <div class="commentLikeBtnDiv">
+          <span><a id="likeCount">{{.Dislikes}}</a></span>
+          <br />
+
+          <form action="/" method="POST">
+            <label for="dislikeSubmit" class="likeLabel">&#10060;</label>
+            {{if .CookieChecker}}
+            <input type="submit" id="dislikeSubmit" name="commentDislikeBtn" value="{{.CommentID}}" maxlength="300" />
+            {{end}}
+          </form>
+        </div>
+
       </div>
       {{end}}
 
@@ -153,8 +153,8 @@
       {{if .CookieChecker}}
       <div>
         <form action="/" method="POST">
-          <input type="textarea" placeholder="Comment" name="commentTxt" required pattern=".*\S+.*"><br>
-          <input type="submit" value="{{.PostID}}" name="commentSubmit">
+          <input type="textarea" placeholder="Comment" name="commentTxt" id="commentTxt" required pattern=".*\S+.*">
+          <input type="submit" value="{{.PostID}}" name="commentSubmit" id="commentSubmit" >
         </form>
       </div>
       {{end}}
@@ -172,6 +172,8 @@
         x.style.display = "flex";
       }
     }
+
+  
 
 
     // When the user clicks anywhere outside of the modal, close it
