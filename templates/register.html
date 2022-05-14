@@ -35,7 +35,7 @@
                 <div>
                     <label for="username">Enter your username:</label>
                     <input type="text" id="username" name="username" required pattern=".*\S+.*" minlength="3"
-                        placeholder="Username">
+                    placeholder="Username">
                 </div>
                 <br>
                 <div>
@@ -48,7 +48,7 @@
                 </div>
 
                 {{if .RegistrationAttempted}}
-                {{if .SuccessfulRegistration }}
+                {{if .SuccessfulRegistration}}
                 <p>You have successfully registered. Please <a id="blackAnchor" href="/log">Log in</a></p>
                 {{else}}
                 <p>The email or username is already in use. Please try again</p>
