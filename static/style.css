@@ -875,11 +875,25 @@ input {
   width: 5vw;
 }
 
+.accountSubmit:hover {
+  color: rgb(0, 0, 0);
+  background-color: #0fc76c;
+  font-family: 'Work Sans',
+    sans-serif;
+  font-weight: bold;
+  border: none;
+  width: 5vw;
+}
+
 #loginErr {
   color: red;
   font-family: 'Work Sans',
     sans-serif;
   font-weight: bold;
-
 }
 
+.boxStyle {
+  border: none;
+  accent-color: #0fc76c;
+  color: white;
+}
