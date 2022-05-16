@@ -236,7 +236,9 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	//Dislikes
 	dislikePostNum := r.FormValue("dislikeBtn")
 	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
+	if dislikePostNum != ""{
 	DislikeButton(dislikePostNum, sqliteDatabase)
+	}
 
 	// comments
 	comment := r.FormValue("commentTxt")
