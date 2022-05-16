@@ -897,3 +897,11 @@ input {
   accent-color: #0fc76c;
   color: white;
 }
+
+#navBarUsername{
+  color: white;
+    font-family: 'Work Sans',
+      sans-serif;
+    font-weight: bold;
+    margin-left: 2vw;
+}

@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="./static/style.css">
 
 
-  <title>Home</title>
+  <title>Forum</title>
 </head>
 
 <!--------------------------------------------------------------- <body> ----------------------------->
@@ -17,6 +17,7 @@
 <body class="Body">
   <!------------------------------------------------- Navbar -->
   <nav class="Navbar">
+    <a id="navBarUsername">{{ .MembersPost.Username}}</a>
     <div class="Navbar-buttons">
       <div id="Not_Login" class="Not_Login">
         {{if .MembersPost.CookieChecker}}
@@ -48,6 +49,7 @@
         </form>
       </div>
     </div>
+
     {{ range .PostingDisplay}}
     <div class="indPosts">
       <br />
