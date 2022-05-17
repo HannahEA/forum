@@ -77,23 +77,26 @@
         <div class="commentBtnDiv">
           <button onclick="commentBox('{{.PostID}}')" class="commentSelector">Comments</button>
         </div>
+
         <div class="Left-Comment-footer" id="like-dislikeBtns">
 
-          <div class="LikeBtnDiv">
+          <!-- <div class="LikeBtnDiv">
             <span><a id="likeCount">{{.Dislikes}}</a></span>
 
+            <span>
 
+              <form action="/" method="POST">
+                <label for="dislikeSubmit" class="likeLabel">&#10060;</label>
+                {{if .CookieChecker}}
+                <input type="submit" id="dislikeSubmit" name="dislikeBtn" class="btnPlace" value="{{.PostID}}" />
+                {{end}}
+              </form>
+            </span>
 
-            <form action="/" method="POST">
-              <label for="dislikeSubmit" class="likeLabel">&#10060;</label>
-              {{if .CookieChecker}}
-              <input type="submit" id="dislikeSubmit" name="dislikeBtn" class="btnPlace" value="{{.PostID}}" />
-              {{end}}
-            </form>
-
-          </div>
+          </div> -->
           <!-- Seperate divs so like buttons can be alligned -->
           <div class="LikeBtnDiv">
+
             <span><a id="likeCount">{{.Likes}}</a></span>
             <span>
 
@@ -104,6 +107,24 @@
                 {{end}}
               </form>
             </span>
+
+
+            <!-- DislikeButton Section -->
+            
+              <span><a id="likeCount">{{.Dislikes}}</a></span>
+
+              <span>
+
+                <form action="/" method="POST">
+                  <label for="dislikeSubmit" class="likeLabel">&#10060;</label>
+                  {{if .CookieChecker}}
+                  <input type="submit" id="dislikeSubmit" name="dislikeBtn" class="btnPlace" value="{{.PostID}}" />
+                  {{end}}
+                </form>
+              </span>
+           
+
+
           </div>
           <!-- Make the commentbtn show a pop up with all related comments when clicked -->
         </div>
@@ -155,7 +176,7 @@
       <div>
         <form action="/" method="POST">
           <input type="textarea" placeholder="Comment" name="commentTxt" id="commentTxt" required pattern=".*\S+.*">
-          <input type="submit" value="{{.PostID}}" name="commentSubmit" id="commentSubmit" >
+          <input type="submit" value="{{.PostID}}" name="commentSubmit" id="commentSubmit">
         </form>
       </div>
       {{end}}
@@ -174,7 +195,7 @@
       }
     }
 
-  
+
 
 
     // When the user clicks anywhere outside of the modal, close it

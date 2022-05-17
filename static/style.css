@@ -326,6 +326,7 @@ p {
 
 .Left-Comment-footer {
   float: right;
+  display: inline;
 }
 
 .Help-box {
@@ -559,6 +560,7 @@ input {
   width: 20wv;
   margin-left: -1.5vw;
   width: 1vw;
+  margin-top: -5vh;
 }
 
 .btnPlace {
@@ -568,7 +570,9 @@ input {
 .LikeBtnDiv {
   float: right;
   margin-right: 1.25vh;
-  margin-top: -5vh;
+  margin-top: -12vh;
+
+
 }
 
 /* STYLING THE COMMENT SECTION */
@@ -904,4 +908,9 @@ input {
       sans-serif;
     font-weight: bold;
     margin-left: 2vw;
+}
+
+
+.btnInline{
+  display: inline-block;
 }

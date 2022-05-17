@@ -102,7 +102,7 @@ func postData(db *sql.DB) []postDisplay {
 		//Make []commentstruct to hold all the comments
 		commentSlc := []commentStruct{}
 		var tempComStruct commentStruct
-		fmt.Println("-------------------------------This line is the post ID: " + u.PostID)
+
 
 		commentRow, errComs := db.Query("SELECT commentID, postID, username, commentText, likes, dislikes FROM comments WHERE postID = ?", u.PostID)
 		if errComs != nil {
@@ -317,6 +317,7 @@ func DislikeUndo(postID string, db *sql.DB) {
 }
 
 func DislikeButton(postID string, db *sql.DB) {
+	fmt.Printf("\n\n--------------THE POSTID FOR THE BUTTON CLICKED IS: %v \n\n", postID)
 	//Check if the user has already liked/disliked this post/comment
 	findRow, errRows := db.Query("SELECT reference FROM liketable WHERE postID = (?) AND user = (?)", postID, Person.Username)
 	if errRows != nil {
