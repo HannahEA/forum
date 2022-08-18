@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"strings"
 
 	uuid "github.com/satori/go.uuid"
@@ -32,18 +31,16 @@ type commentStruct struct {
 }
 
 //newPost creates a new post by a registered user
-func newPost(userName, category, title, post string, db *sql.DB) {
+func NewPost(userName, category, title, post string, db *sql.DB) {
 	//If the title is empty the form is resubitting once all values have been reset so the post shouldn't be added to the database
 	if title == "" {
 		return
 	}
 
-	fmt.Println("ADDING POST")
 	uuid := uuid.NewV4().String()
 	_, err := db.Exec("INSERT INTO posts (postID, userName, category, likes, dislikes, title, post) VALUES (?, ?, ?, 0, 0, ?, ?)", uuid, userName, category, title, post)
 	if err != nil {
-		fmt.Println("Error adding new post")
-		log.Fatal(err.Error())
+		fmt.Println("Error adding new post", err.Error())
 	}
 	Person.PostAdded = true
 
@@ -71,11 +68,10 @@ func newPost(userName, category, title, post string, db *sql.DB) {
 	}
 }
 
-func postData(db *sql.DB) []postDisplay {
+func PostData(db *sql.DB) []postDisplay {
 	rows, err := db.Query("SELECT postID, userName, category, likes, dislikes, title, post FROM posts")
 	if err != nil {
-		fmt.Println("Error selecting post data")
-		log.Fatal(err.Error())
+		fmt.Println("Error selecting post data", err.Error())
 	}
 
 	finalArray := []postDisplay{}
@@ -94,8 +90,7 @@ func postData(db *sql.DB) []postDisplay {
 		)
 		u.CookieChecker = Person.CookieChecker
 		if err != nil {
-			fmt.Println("SCANNING ERROR")
-			log.Fatal(err.Error())
+			fmt.Println("SCANNING ERROR", err.Error())
 		}
 
 		//Get comments for the relevent post]
@@ -106,8 +101,7 @@ func postData(db *sql.DB) []postDisplay {
 
 		commentRow, errComs := db.Query("SELECT commentID, postID, username, commentText, likes, dislikes FROM comments WHERE postID = ?", u.PostID)
 		if errComs != nil {
-			fmt.Println("Error selecting comment data")
-			log.Fatal(errComs.Error())
+			fmt.Println("Error selecting comment data", errComs.Error())
 		}
 		for commentRow.Next() {
 			err := commentRow.Scan(
@@ -120,10 +114,8 @@ func postData(db *sql.DB) []postDisplay {
 			)
 			tempComStruct.CookieChecker = Person.CookieChecker
 			if err != nil {
-				fmt.Println("Error scanning comments")
-				log.Fatal(err.Error())
+				fmt.Println("Error scanning comments", err.Error())
 			}
-			fmt.Printf("\nCOMMENT STRUCT_____-------------------------------------%v\n\n", tempComStruct)
 			commentSlc = append(commentSlc, tempComStruct)
 		}
 		u.Comments = commentSlc
@@ -143,8 +135,7 @@ func LikeButton(postID string, db *sql.DB) {
 	//Check if the user has already liked this post/comment
 	findRow, errRows := db.Query("SELECT reference FROM liketable WHERE postID = (?) AND user = (?)", postID, Person.Username)
 	if errRows != nil {
-		fmt.Println("SELECTING LIKE ERROR")
-		log.Fatal(errRows.Error())
+		fmt.Println("SELECTING LIKE ERROR", errRows.Error())
 	}
 	rounds := 0
 
@@ -156,7 +147,7 @@ func LikeButton(postID string, db *sql.DB) {
 		)
 
 		if err2 != nil {
-			log.Fatal(err2.Error())
+			fmt.Println(err2.Error())
 		}
 	}
 
@@ -164,8 +155,7 @@ func LikeButton(postID string, db *sql.DB) {
 	if rounds == 0 {
 		_, insertLikeErr := db.Exec("INSERT INTO liketable (user, postID, reference) VALUES (?, ?, 1)", Person.Username, postID)
 		if insertLikeErr != nil {
-			fmt.Println("Error when inserting into like table initially (LIKEBUTTON)")
-			log.Fatal(insertLikeErr.Error())
+			fmt.Println("Error when inserting into like table initially (LIKEBUTTON)", insertLikeErr.Error())
 		}
 
 		//Increase likes
@@ -197,15 +187,13 @@ func LikeButton(postID string, db *sql.DB) {
 func RefUpdate(value int, postID string, db *sql.DB) {
 	_, err2 := db.Exec("UPDATE liketable SET reference = (?) WHERE postID = (?) AND user = (?)", value, postID, Person.Username)
 	if err2 != nil {
-		fmt.Println("UPDATING REFERENCE ")
-		log.Fatal(err2.Error())
+		fmt.Println("UPDATING REFERENCE ", err2.Error())
 	}
 }
 func CommentRefUpdate(value int, postID string, db *sql.DB) {
 	_, err2 := db.Exec("UPDATE liketable SET reference = (?) WHERE commentID = (?) AND user = (?)", value, postID, Person.Username)
 	if err2 != nil {
-		fmt.Println("UPDATING REFERENCE ")
-		log.Fatal(err2.Error())
+		fmt.Println("UPDATING REFERENCE ",err2.Error())
 	}
 }
 
@@ -214,8 +202,7 @@ func LikeIncrease(postID string, db *sql.DB) {
 
 	likes, err := db.Query("SELECT likes FROM posts WHERE postID = (?)", postID)
 	if err != nil {
-		fmt.Println("Error selecting likes")
-		log.Fatal(err.Error())
+		fmt.Println("Error selecting likes", err.Error())
 	}
 
 	var temp postDisplay
@@ -224,16 +211,14 @@ func LikeIncrease(postID string, db *sql.DB) {
 			&temp.Likes,
 		)
 		if err != nil {
-			fmt.Println("SCANNING ERROR")
-			log.Fatal(err.Error())
+			fmt.Println("SCANNING ERROR", err.Error())
 		}
 	}
 
 	temp.Likes++
 	_, err2 := db.Exec("UPDATE posts SET likes = (?) WHERE postID = (?)", temp.Likes, postID)
 	if err2 != nil {
-		fmt.Println("UPDATING LIKES WHEN ROUNDS == 0")
-		log.Fatal(err.Error())
+		fmt.Println("UPDATING LIKES WHEN ROUNDS == 0", err.Error())
 	}
 
 }
@@ -241,8 +226,7 @@ func LikeIncrease(postID string, db *sql.DB) {
 func LikeUndo(postID string, db *sql.DB) {
 	likes, err := db.Query("SELECT likes FROM posts WHERE postID = (?)", postID)
 	if err != nil {
-		fmt.Println("Error in LIKE UNDO")
-		log.Fatal(err.Error())
+		fmt.Println("Error in LIKE UNDO", err.Error())
 	}
 
 	var temp postDisplay
@@ -251,24 +235,21 @@ func LikeUndo(postID string, db *sql.DB) {
 			&temp.Likes,
 		)
 		if err != nil {
-			fmt.Println("SCANNING ERROR")
-			log.Fatal(err.Error())
+			fmt.Println("SCANNING ERROR", err.Error())
 		}
 	}
 
 	temp.Likes--
 	_, err2 := db.Exec("UPDATE posts SET likes = (?) WHERE postID = (?)", temp.Likes, postID)
 	if err2 != nil {
-		fmt.Println("LIKE UNDO")
-		log.Fatal(err.Error())
+		fmt.Println("LIKE UNDO", err.Error())
 	}
 }
 
 func DislikeIncrease(postID string, db *sql.DB) {
 	dislikes, err := db.Query("SELECT dislikes FROM posts WHERE postID = (?)", postID)
 	if err != nil {
-		fmt.Println("Error in DislikeIncrease")
-		log.Fatal(err.Error())
+		fmt.Println("Error in DislikeIncrease", err.Error())
 	}
 
 	var temp postDisplay
@@ -277,24 +258,21 @@ func DislikeIncrease(postID string, db *sql.DB) {
 			&temp.Dislikes,
 		)
 		if err != nil {
-			fmt.Println("SCANNING ERROR")
-			log.Fatal(err.Error())
+			fmt.Println("SCANNING ERROR", err.Error())
 		}
 	}
 
 	temp.Dislikes++
 	_, err2 := db.Exec("UPDATE posts SET dislikes = (?) WHERE postID = (?)", temp.Dislikes, postID)
 	if err2 != nil {
-		fmt.Println("UPDATING DISLIKES")
-		log.Fatal(err.Error())
+		fmt.Println("UPDATING DISLIKES", err.Error())
 	}
 }
 
 func DislikeUndo(postID string, db *sql.DB) {
 	dislikes, err := db.Query("SELECT dislikes FROM posts WHERE postID = (?)", postID)
 	if err != nil {
-		fmt.Println("Error in DislikeUndo")
-		log.Fatal(err.Error())
+		fmt.Println("Error in DislikeUndo", err.Error())
 	}
 
 	var temp postDisplay
@@ -303,26 +281,22 @@ func DislikeUndo(postID string, db *sql.DB) {
 			&temp.Dislikes,
 		)
 		if err != nil {
-			fmt.Println("SCANNING ERROR")
-			log.Fatal(err.Error())
+			fmt.Println("SCANNING ERROR", err.Error())
 		}
 	}
 
 	temp.Dislikes--
 	_, err2 := db.Exec("UPDATE posts SET dislikes = (?) WHERE postID = (?)", temp.Dislikes, postID)
 	if err2 != nil {
-		fmt.Println("DISLIKE UNDO")
-		log.Fatal(err.Error())
+		fmt.Println("DISLIKE UNDO", err.Error())
 	}
 }
 
 func DislikeButton(postID string, db *sql.DB) {
-	fmt.Printf("\n\n--------------THE POSTID FOR THE BUTTON CLICKED IS: %v \n\n", postID)
 	//Check if the user has already liked/disliked this post/comment
 	findRow, errRows := db.Query("SELECT reference FROM liketable WHERE postID = (?) AND user = (?)", postID, Person.Username)
 	if errRows != nil {
-		fmt.Println("SELECTING LIKE ERROR")
-		log.Fatal(errRows.Error())
+		fmt.Println("SELECTING LIKE ERROR", errRows.Error())
 	}
 	rounds := 0
 
@@ -334,8 +308,7 @@ func DislikeButton(postID string, db *sql.DB) {
 		)
 
 		if err != nil {
-			fmt.Println("Error in Dislike Button")
-			log.Fatal(err.Error())
+			fmt.Println("Error in Dislike Button", err.Error())
 		}
 	}
 
@@ -344,8 +317,7 @@ func DislikeButton(postID string, db *sql.DB) {
 		//Add the user to the liketable
 		_, insertLikeErr := db.Exec("INSERT INTO liketable (user, postID, reference) VALUES (?, ?, -1)", Person.Username, postID)
 		if insertLikeErr != nil {
-			fmt.Println("Error when inserting into like table initially (DISLIKEBUTTON)")
-			log.Fatal(insertLikeErr.Error())
+			fmt.Println("Error when inserting into like table initially (DISLIKEBUTTON)", insertLikeErr.Error())
 		}
 		//Increase number of dslikes
 		DislikeIncrease(postID, sqliteDatabase)
@@ -374,17 +346,15 @@ func DislikeButton(postID string, db *sql.DB) {
 }
 
 //Add a new comment to a post
-func newComment(userName, postID, commentText string, db *sql.DB) {
+func NewComment(userName, postID, commentText string, db *sql.DB) {
 	if commentText == "" {
 		return
 	}
 
-	fmt.Println("ADDING Comment")
 	uuid := uuid.NewV4().String()
 	_, err := db.Exec("INSERT INTO comments (commentID, postID, userName, commentText, likes, dislikes) VALUES (?, ?, ?, ?, 0, 0)", uuid, postID, userName, commentText)
 	if err != nil {
-		fmt.Println("ERROR ADDING COMMENT TO THE TABLE")
-		log.Fatal(err.Error())
+		fmt.Println("ERROR ADDING COMMENT TO THE TABLE",err.Error())
 	}
 	Person.PostAdded = true
 
@@ -394,8 +364,7 @@ func CommentLikeButton(postID string, db *sql.DB) {
 	//Check if the user has already liked this post/comment
 	findRow, errRows := db.Query("SELECT reference FROM liketable WHERE commentID = (?) AND user = (?)", postID, Person.Username)
 	if errRows != nil {
-		fmt.Println("SELECTING LIKE ERROR")
-		log.Fatal(errRows.Error())
+		fmt.Println("SELECTING LIKE ERROR", errRows.Error())
 	}
 	rounds := 0
 
@@ -407,7 +376,7 @@ func CommentLikeButton(postID string, db *sql.DB) {
 		)
 
 		if err2 != nil {
-			log.Fatal(err2.Error())
+			fmt.Println(err2.Error())
 		}
 	}
 
@@ -415,8 +384,7 @@ func CommentLikeButton(postID string, db *sql.DB) {
 	if rounds == 0 {
 		_, insertLikeErr := db.Exec("INSERT INTO liketable (user, commentID, reference) VALUES (?, ?, 1)", Person.Username, postID)
 		if insertLikeErr != nil {
-			fmt.Println("Error when inserting into like table initially (LIKEBUTTON)")
-			log.Fatal(insertLikeErr.Error())
+			fmt.Println("Error when inserting into like table initially (LIKEBUTTON)", insertLikeErr.Error())
 		}
 
 		//Increase likes
@@ -424,7 +392,6 @@ func CommentLikeButton(postID string, db *sql.DB) {
 	} else {
 		//Reference is equal to 1 so we need to undo the like action
 
-		fmt.Printf("\n ------------------------------------------------------------------REFERENCE is equal to: %v", check.Likes)
 		if check.Likes == 1 {
 			CommentLikeUndo(postID, sqliteDatabase)
 			//Update reference to 0
@@ -452,8 +419,8 @@ func CommentLikeIncrease(postID string, db *sql.DB) {
 
 	likes, err := db.Query("SELECT likes FROM comments WHERE commentID = (?)", postID)
 	if err != nil {
-		fmt.Println("Error selecting likes")
-		log.Fatal(err.Error())
+		fmt.Println("Error selecting likes",err.Error())
+		
 	}
 
 	var temp postDisplay
@@ -462,18 +429,16 @@ func CommentLikeIncrease(postID string, db *sql.DB) {
 			&temp.Likes,
 		)
 		if err != nil {
-			fmt.Println("SCANNING ERROR")
-			log.Fatal(err.Error())
+			fmt.Println("SCANNING ERROR", err.Error())
+			
 		}
 	}
-	fmt.Printf("CURRENT COMMENT LIKES: %v \n", temp.Likes)
 
 	temp.Likes++
-	fmt.Printf("\n INCREAED COMMENT LIKES: %v !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111\n", temp.Likes)
 	_, err2 := db.Exec("UPDATE comments SET likes = (?) WHERE commentID = (?)", temp.Likes, postID)
 	if err2 != nil {
-		fmt.Println("UPDATING LIKES WHEN ROUNDS == 0")
-		log.Fatal(err.Error())
+		fmt.Println("UPDATING LIKES WHEN ROUNDS == 0",err.Error())
+		
 	}
 
 }
@@ -481,8 +446,8 @@ func CommentLikeIncrease(postID string, db *sql.DB) {
 func CommentLikeUndo(postID string, db *sql.DB) {
 	likes, err := db.Query("SELECT likes FROM comments WHERE commentID = (?)", postID)
 	if err != nil {
-		fmt.Println("Error in LIKE UNDO")
-		log.Fatal(err.Error())
+		fmt.Println("Error in LIKE UNDO", err.Error())
+		
 	}
 
 	var temp postDisplay
@@ -491,24 +456,24 @@ func CommentLikeUndo(postID string, db *sql.DB) {
 			&temp.Likes,
 		)
 		if err != nil {
-			fmt.Println("SCANNING ERROR")
-			log.Fatal(err.Error())
+			fmt.Println("SCANNING ERROR", err.Error())
+			
 		}
 	}
 
 	temp.Likes--
 	_, err2 := db.Exec("UPDATE comments SET likes = (?) WHERE commentID = (?)", temp.Likes, postID)
 	if err2 != nil {
-		fmt.Println("LIKE UNDO")
-		log.Fatal(err.Error())
+		fmt.Println("LIKE UNDO", err.Error())
+		
 	}
 }
 
 func CommentDislikeUndo(postID string, db *sql.DB) {
 	dislikes, err := db.Query("SELECT dislikes FROM comments WHERE commentID = (?)", postID)
 	if err != nil {
-		fmt.Println("Error in DislikeUndo")
-		log.Fatal(err.Error())
+		fmt.Println("Error in DislikeUndo", err.Error())
+		
 	}
 
 	var temp postDisplay
@@ -517,24 +482,24 @@ func CommentDislikeUndo(postID string, db *sql.DB) {
 			&temp.Dislikes,
 		)
 		if err != nil {
-			fmt.Println("SCANNING ERROR")
-			log.Fatal(err.Error())
+			fmt.Println("SCANNING ERROR", err.Error())
+			
 		}
 	}
 
 	temp.Dislikes--
 	_, err2 := db.Exec("UPDATE comments SET dislikes = (?) WHERE commentID = (?)", temp.Dislikes, postID)
 	if err2 != nil {
-		fmt.Println("DISLIKE UNDO")
-		log.Fatal(err.Error())
+		fmt.Println("DISLIKE UNDO", err.Error())
+		
 	}
 }
 
 func CommentDislikeIncrease(postID string, db *sql.DB) {
 	dislikes, err := db.Query("SELECT dislikes FROM comments WHERE commentID = (?)", postID)
 	if err != nil {
-		fmt.Println("Error in DislikeIncrease")
-		log.Fatal(err.Error())
+		fmt.Println("Error in DislikeIncrease", err.Error())
+		
 	}
 
 	var temp postDisplay
@@ -543,16 +508,16 @@ func CommentDislikeIncrease(postID string, db *sql.DB) {
 			&temp.Dislikes,
 		)
 		if err != nil {
-			fmt.Println("SCANNING ERROR")
-			log.Fatal(err.Error())
+			fmt.Println("SCANNING ERROR", err.Error())
+			
 		}
 	}
 
 	temp.Dislikes++
 	_, err2 := db.Exec("UPDATE comments SET dislikes = (?) WHERE commentID = (?)", temp.Dislikes, postID)
 	if err2 != nil {
-		fmt.Println("UPDATING DISLIKES")
-		log.Fatal(err.Error())
+		fmt.Println("UPDATING DISLIKES", err.Error())
+		
 	}
 }
 
@@ -560,8 +525,8 @@ func CommentDislikeButton(postID string, db *sql.DB) {
 	//Check if the user has already liked/disliked this post/comment
 	findRow, errRows := db.Query("SELECT reference FROM liketable WHERE commentID = (?) AND user = (?)", postID, Person.Username)
 	if errRows != nil {
-		fmt.Println("SELECTING LIKE ERROR")
-		log.Fatal(errRows.Error())
+		fmt.Println("SELECTING LIKE ERROR", errRows.Error())
+		
 	}
 	rounds := 0
 
@@ -573,8 +538,8 @@ func CommentDislikeButton(postID string, db *sql.DB) {
 		)
 
 		if err != nil {
-			fmt.Println("Error in Dislike Button")
-			log.Fatal(err.Error())
+			fmt.Println("Error in Dislike Button", err.Error())
+			
 		}
 	}
 
@@ -583,8 +548,8 @@ func CommentDislikeButton(postID string, db *sql.DB) {
 		//Add the user to the liketable
 		_, insertLikeErr := db.Exec("INSERT INTO liketable (user, commentID, reference) VALUES (?, ?, -1)", Person.Username, postID)
 		if insertLikeErr != nil {
-			fmt.Println("Error when inserting into like table initially (DISLIKEBUTTON)")
-			log.Fatal(insertLikeErr.Error())
+			fmt.Println("Error when inserting into like table initially (DISLIKEBUTTON)", insertLikeErr.Error())
+			
 		}
 		//Increase number of dslikes
 		CommentDislikeIncrease(postID, sqliteDatabase)
@@ -621,8 +586,8 @@ func PostGetter(postIDSlc []string, db *sql.DB) []postDisplay {
 	for _, r := range postIDSlc {
 		rows, errDetails := db.Query("SELECT postID, userName, category, likes, dislikes, title, post FROM posts WHERE postID = (?)", r)
 		if errDetails != nil {
-			fmt.Println("ERROR when selecting the information for specific posts (func POSTGETTER)")
-			log.Fatal(errDetails.Error())
+			fmt.Println("ERROR when selecting the information for specific posts (func POSTGETTER)", errDetails.Error())
+			
 		}
 
 		for rows.Next() {
@@ -638,8 +603,8 @@ func PostGetter(postIDSlc []string, db *sql.DB) []postDisplay {
 			)
 			postDetails.CookieChecker = Person.CookieChecker
 			if err != nil {
-				fmt.Println("ERROR Scanning through the rows (func POSTGETTER)")
-				log.Fatal(err.Error())
+				fmt.Println("ERROR Scanning through the rows (func POSTGETTER)", err.Error())
+				
 			}
 			finalArray = append(finalArray, postDetails)
 		}

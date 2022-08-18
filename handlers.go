@@ -56,7 +56,7 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 	if Person.Accesslevel && Person.CookieChecker {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	} else if Person.Accesslevel {
-		//The user is already logged in
+		// The user is already logged in
 		Person.Attempted = false
 		tpl := template.Must(template.ParseGlob("templates/login.html"))
 		if err := tpl.Execute(w, Person); err != nil {
@@ -64,13 +64,12 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if ValidEmail(email, sqliteDatabase) {
 		if LoginValidator(email, pass, sqliteDatabase) {
-			//Create the cookie
+			// Create the cookie
 
 			if Person.Accesslevel {
 				cookie, err := r.Cookie("1st-cookie")
-				fmt.Println("cookie:", cookie, "err:", err)
 				if err != nil {
-					fmt.Println("cookie was not found")
+					fmt.Println("cookie was not found: ", err)
 					cookie = &http.Cookie{
 						Name:     "1st-cookie",
 						Value:    uuid.String(),
@@ -86,7 +85,7 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 			Person.CookieChecker = true
 			Person.Attempted = false
 
-			x := homePageStruct{MembersPost: Person, PostingDisplay: postData(sqliteDatabase)}
+			x := homePageStruct{MembersPost: Person, PostingDisplay: PostData(sqliteDatabase)}
 			tpl := template.Must(template.ParseGlob("templates/index.html"))
 			if err := tpl.Execute(w, x); err != nil {
 				http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
@@ -97,7 +96,6 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 			}
 		}
-
 	} else {
 		tpl := template.Must(template.ParseGlob("templates/login.html"))
 		if err := tpl.Execute(w, Person); err != nil {
@@ -106,20 +104,20 @@ func LoginResult(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func registration(w http.ResponseWriter, r *http.Request) {
+func Registration(w http.ResponseWriter, r *http.Request) {
 	urlError := urlError(w, r)
 	if urlError {
 		return
 	}
-	Person.RegistrationAttempted=false
+	Person.RegistrationAttempted = false
 	tpl := template.Must(template.ParseGlob("templates/register.html"))
 	if err := tpl.Execute(w, Person); err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Executing Error: ", err.Error())
 		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
 }
 
-func registration2(w http.ResponseWriter, r *http.Request) {
+func Registration2(w http.ResponseWriter, r *http.Request) {
 	Person.SuccessfulRegistration = false
 	urlError := urlError(w, r)
 	if urlError {
@@ -136,7 +134,7 @@ func registration2(w http.ResponseWriter, r *http.Request) {
 	pass := r.FormValue("password")
 	Person.RegistrationAttempted = true
 
-	exist, _ := userExist(email, userN, sqliteDatabase)
+	exist, _ := UserExist(email, userN, sqliteDatabase)
 
 	tpl := template.Must(template.ParseGlob("templates/register.html"))
 
@@ -148,14 +146,13 @@ func registration2(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		Person.SuccessfulRegistration = true
-		newUser(email, userN, pass, sqliteDatabase)
+		NewUser(email, userN, pass, sqliteDatabase)
 
 		if err := tpl.Execute(w, Person); err != nil {
 			http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 		}
 
 	}
-
 }
 
 func Post(w http.ResponseWriter, r *http.Request) {
@@ -168,10 +165,9 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	if err := tpl.Execute(w, Person); err != nil {
 		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
-
 }
 
-func postAdded(w http.ResponseWriter, r *http.Request) {
+func PostAdded(w http.ResponseWriter, r *http.Request) {
 	urlError := urlError(w, r)
 	if urlError {
 		return
@@ -186,7 +182,7 @@ func postAdded(w http.ResponseWriter, r *http.Request) {
 	FScat := r.FormValue("FullStack")
 
 	cat := FEcat + " " + BEcat + " " + FScat
-	//Loop through cat and remove any empty strings
+	// Loop through cat and remove any empty strings
 	c := []rune(cat)
 	category := []rune{}
 	for i := 0; i < len(c); i++ {
@@ -198,18 +194,17 @@ func postAdded(w http.ResponseWriter, r *http.Request) {
 	cat = string(category)
 	title := r.FormValue("title")
 	post := r.FormValue("post")
-	newPost(Person.Username, cat, title, post, sqliteDatabase)
-	//Add the post to the categories table with relevant table selected
+	NewPost(Person.Username, cat, title, post, sqliteDatabase)
+	// Add the post to the categories table with relevant table selected
 
-	//Initialise the homePAgeStruct to pass through multiple data types
-	x := homePageStruct{MembersPost: Person, PostingDisplay: postData(sqliteDatabase)}
+	// Initialise the homePAgeStruct to pass through multiple data types
+	x := homePageStruct{MembersPost: Person, PostingDisplay: PostData(sqliteDatabase)}
 
 	tpl := template.Must(template.ParseGlob("templates/index.html"))
 
 	if err := tpl.Execute(w, x); err != nil {
 		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
-
 }
 
 type homePageStruct struct {
@@ -227,36 +222,28 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "400 Status Bad Request", http.StatusBadRequest)
 		return
 	}
-	//Likes
+	// Likes
 	postNum := r.FormValue("likeBtn")
-	fmt.Printf("\n LIKE BUTTON VALUE \n")
-	fmt.Println(postNum)
 	LikeButton(postNum, sqliteDatabase)
 
-	//Dislikes
+	// Dislikes
 	dislikePostNum := r.FormValue("dislikeBtn")
-	fmt.Printf("\n\n\n?????????????????????????????DISLIKE BUTTON VALUE : %v \n \n", dislikePostNum)
 	DislikeButton(dislikePostNum, sqliteDatabase)
-	
 
 	// comments
 	comment := r.FormValue("commentTxt")
 	commentPostID := r.FormValue("commentSubmit")
-	fmt.Printf("ADDING COMMENT: %v", commentPostID)
-	newComment(Person.Username, commentPostID, comment, sqliteDatabase)
+	NewComment(Person.Username, commentPostID, comment, sqliteDatabase)
 
-	//Comment likes
+	// Comment likes
 	commentNum := r.FormValue("commentlikeBtn")
-	fmt.Printf("\n Comment LIKE BUTTON VALUE")
-	fmt.Println(commentNum)
 	CommentLikeButton(commentNum, sqliteDatabase)
 
-	//Dislike comments
+	// Dislike comments
 	commentDislike := r.FormValue("commentDislikeBtn")
-	fmt.Printf("\nDISLIKE BUTTON VALUE \n")
 	CommentDislikeButton(commentDislike, sqliteDatabase)
 
-	//Make a button that gives a value depending on the filter button
+	// Make a button that gives a value depending on the filter button
 	FE := r.FormValue("FEfilter")
 	BE := r.FormValue("BEfilter")
 	FS := r.FormValue("FSfilter")
@@ -267,10 +254,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	postSlc := []postDisplay{}
 	if FE == "FrontEnd" {
 		frontEndSlc := []string{}
-		//Create a query that gets the postIDs needed
+		// Create a query that gets the postIDs needed
 		frontEndRows, errGetIDs := sqliteDatabase.Query("SELECT postID from categories WHERE FrontEnd = 1")
 		if errGetIDs != nil {
-			fmt.Println("EEROR trying to SELECT the posts with front end ID")
+			fmt.Println("Error trying to SELECT the posts with front end ID", errGetIDs)
 		}
 		for frontEndRows.Next() {
 			var GetIDs commentStruct
@@ -279,7 +266,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 				&GetIDs.CommentID,
 			)
 			if err != nil {
-				fmt.Println("Error Scanning through rows")
+				fmt.Println("Error Scanning through rows", err)
 			}
 
 			frontEndSlc = append(frontEndSlc, GetIDs.CommentID)
@@ -288,10 +275,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 	} else if BE == "BackEnd" {
 		BackEndSlc := []string{}
-		//Create a query that gets the postIDs needed
+		// Create a query that gets the postIDs needed
 		backEndRows, errGetIDs := sqliteDatabase.Query("SELECT postID from categories WHERE BackEnd = 1")
 		if errGetIDs != nil {
-			fmt.Println("EEROR trying to SELECT the posts with front end ID")
+			fmt.Println("Error trying to SELECT the posts with front end ID", errGetIDs)
 		}
 		for backEndRows.Next() {
 			var GetIDs commentStruct
@@ -300,7 +287,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 				&GetIDs.CommentID,
 			)
 			if err != nil {
-				fmt.Println("Error Scanning through rows")
+				fmt.Println("Error Scanning through rows", err)
 			}
 
 			BackEndSlc = append(BackEndSlc, GetIDs.CommentID)
@@ -309,10 +296,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 	} else if FS == "FullStack" {
 		FullStackSlc := []string{}
-		//Create a query that gets the postIDs needed
+		// Create a query that gets the postIDs needed
 		FullStackRows, errGetIDs := sqliteDatabase.Query("SELECT postID from categories WHERE FullStack = 1")
 		if errGetIDs != nil {
-			fmt.Println("EEROR trying to SELECT the posts with front end ID")
+			fmt.Println("Error trying to SELECT the posts with front end ID", errGetIDs)
 		}
 		for FullStackRows.Next() {
 			var GetIDs commentStruct
@@ -321,7 +308,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 				&GetIDs.CommentID,
 			)
 			if err != nil {
-				fmt.Println("Error Scanning through rows")
+				fmt.Println("Error Scanning through rows", err)
 			}
 
 			FullStackSlc = append(FullStackSlc, GetIDs.CommentID)
@@ -330,10 +317,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 	} else if MyLikes == "Liked Posts" {
 		likedSlc := []string{}
-		//Create a query that gets the postIDs needed
+		// Create a query that gets the postIDs needed
 		likedRows, errGetIDs := sqliteDatabase.Query("SELECT postID from liketable WHERE reference = 1 AND user = (?)", Person.Username)
 		if errGetIDs != nil {
-			fmt.Println("EEROR trying to SELECT the posts with front end ID")
+			fmt.Println("EEROR trying to SELECT the posts with front end ID", errGetIDs)
 		}
 		for likedRows.Next() {
 			var GetIDs commentStruct
@@ -342,7 +329,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 				&GetIDs.CommentID,
 			)
 			if err != nil {
-				fmt.Println("Error Scanning through rows")
+				fmt.Println("Error Scanning through rows", err)
 			}
 
 			likedSlc = append(likedSlc, GetIDs.CommentID)
@@ -350,10 +337,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		postSlc = PostGetter(likedSlc, sqliteDatabase)
 	} else if Created == "My Posts" {
 		myPostsSlc := []string{}
-		//Create a query that gets the postIDs needed
+		// Create a query that gets the postIDs needed
 		myPostsRows, errGetIDs := sqliteDatabase.Query("SELECT postID from posts WHERE userName = (?)", Person.Username)
 		if errGetIDs != nil {
-			fmt.Println("EEROR trying to SELECT the posts with front end ID")
+			fmt.Println("EEROR trying to SELECT the posts with front end ID", errGetIDs)
 		}
 		for myPostsRows.Next() {
 			var GetIDs commentStruct
@@ -362,7 +349,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 				&GetIDs.CommentID,
 			)
 			if err != nil {
-				fmt.Println("Error Scanning through rows")
+				fmt.Println("Error Scanning through rows", err)
 			}
 
 			myPostsSlc = append(myPostsSlc, GetIDs.CommentID)
@@ -370,7 +357,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		postSlc = PostGetter(myPostsSlc, sqliteDatabase)
 
 	} else {
-		postSlc = postData(sqliteDatabase)
+		postSlc = PostData(sqliteDatabase)
 	}
 
 	c1, err1 := r.Cookie("1st-cookie")
@@ -380,25 +367,21 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, c1)
 	}
 
-	c, err := r.Cookie("1st-cookie")
+	_, err := r.Cookie("1st-cookie")
 
 	if err != nil && Person.Accesslevel {
-		//logged in and on 2nd browser
+		// logged in and on 2nd browser
 		Person.CookieChecker = false
-
 	} else if err == nil && Person.Accesslevel {
-		//Original browser
+		// Original browser
 		Person.CookieChecker = true
-
 	} else {
 		// not logged in yet
 		Person.CookieChecker = false
 	}
 
-	fmt.Printf("\n\n\n------------------------------------------------------------------Struct BEFORE: %v\n\n\n\n", Person)
 
-	fmt.Printf("\n\n\n------------------------------------------------------------------Struct AFTER: %v\n\n\n\n", Person)
-	//Initialise the homePAgeStruct to pass through multiple data types
+	// Initialise the homePAgeStruct to pass through multiple data types
 	x := homePageStruct{MembersPost: Person, PostingDisplay: postSlc}
 
 	tpl := template.Must(template.ParseGlob("templates/index.html"))
@@ -406,7 +389,6 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	if err := tpl.Execute(w, x); err != nil {
 		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
 	}
-	fmt.Println("YOUR COOKIE:", c)
 }
 
 func LogOut(w http.ResponseWriter, r *http.Request) {
@@ -421,9 +403,8 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 	}
 
 	c, err := r.Cookie("1st-cookie")
-
 	if err != nil {
-		fmt.Println("Problem logging out with cookie")
+		fmt.Println("Problem logging out with cookie", err)
 	}
 
 	c.MaxAge = -1
@@ -436,13 +417,8 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 	var newPerson userDetails
 	Person = newPerson
 
-	fmt.Println(Person)
+	 http.Redirect(w, r, "/", http.StatusSeeOther)
 
-	tpl := template.Must(template.ParseGlob("templates/logout.html"))
-
-	if err := tpl.Execute(w, ""); err != nil {
-		http.Error(w, "No such file or directory: Internal Server Error 500", http.StatusInternalServerError)
-	}
 }
 
 func urlError(w http.ResponseWriter, r *http.Request) bool {

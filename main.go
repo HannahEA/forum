@@ -30,11 +30,11 @@ func main() {
 	http.HandleFunc("/", Home)
 	http.HandleFunc("/log", LoginHandler)
 	http.HandleFunc("/login", LoginResult)
-	http.HandleFunc("/register", registration)
-	http.HandleFunc("/registration", registration2)
+	http.HandleFunc("/register", Registration)
+	http.HandleFunc("/registration", Registration2)
 	http.HandleFunc("/logout", LogOut)
 	http.HandleFunc("/new-post", Post)
-	http.HandleFunc("/post-added", postAdded)
+	http.HandleFunc("/post-added", PostAdded)
 	http.ListenAndServe(":8080", nil)
 
 }

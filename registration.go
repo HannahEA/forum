@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 
 	uuid "github.com/satori/go.uuid"
@@ -24,27 +23,26 @@ type userDetails struct {
 	PostAdded              bool
 }
 
-//newUser registers a new user to the database selected
-func newUser(email, username, password string, db *sql.DB) {
+//NewUser registers a new user to the database selected
+func NewUser(email, username, password string, db *sql.DB) {
 	hash, err := HashPassword(password)
 	if err != nil {
-		log.Fatal(err.Error())
+		fmt.Println("Error hasing the password", err)
 	}
 
 	u1 := uuid.NewV4()
 	_, errNewUser := db.Exec("INSERT INTO users (ID, email, username, password) VALUES (?, ?, ?, ?)", u1, email, username, hash)
 	if errNewUser != nil {
 		fmt.Printf("The error is %v", errNewUser.Error())
-		log.Fatal()
 	}
 
 }
 
-//userExsists checks if the username entered is already taken. If it is the function returns true.
-func userExist(email, username string, db *sql.DB) (bool, string) {
+//UserExsists checks if the username entered is already taken. If it is the function returns true.
+func UserExist(email, username string, db *sql.DB) (bool, string) {
 	rows, err := db.Query("SELECT email FROM users WHERE email = ?", email)
 	if err != nil {
-		log.Fatal(err.Error())
+		fmt.Println("Error checking the email in userExist(): ", err)
 	}
 	count := 0
 
@@ -54,7 +52,7 @@ func userExist(email, username string, db *sql.DB) (bool, string) {
 
 	rows1, err1 := db.Query("SELECT username FROM users WHERE username = ?", username)
 	if err1 != nil {
-		log.Fatal(err1.Error())
+		fmt.Println("Error checking the username in userExist(): ", err1.Error())
 	}
 
 	count1 := 0
@@ -78,7 +76,7 @@ func userExist(email, username string, db *sql.DB) (bool, string) {
 func ValidEmail(email string, db *sql.DB) bool {
 	rows, err := db.Query("SELECT email FROM users WHERE email = ?", email)
 	if err != nil {
-		log.Fatal(err.Error())
+		fmt.Println("Error selecting the email in ValidEmail(): ", err)
 	}
 	count := 0
 
@@ -98,7 +96,7 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 	rows1, err1 := db.Query("SELECT ID, email, username, password FROM users WHERE email = ?", email)
 
 	if err1 != nil {
-		log.Fatal(err1.Error())
+		fmt.Println("Error selecting the details in LoginValidator(): ", err1.Error())
 	}
 
 	var u userDetails
@@ -112,8 +110,7 @@ func LoginValidator(email, password string, db *sql.DB) bool {
 		)
 
 		if err != nil {
-			fmt.Println("SCANNING ERROR")
-			log.Fatal(err.Error())
+			fmt.Println("SCANNING ERROR", err)
 		}
 	}
 
@@ -142,7 +139,6 @@ func CookieAdd(cookie *http.Cookie, db *sql.DB) {
 	_, errCookie := db.Exec("INSERT INTO cookies (name, sessionID) VALUES (?, ?)", cookie.Name, cookie.Value)
 	if errCookie != nil {
 		fmt.Printf("The error is %v", errCookie.Error())
-		log.Fatal()
 	}
 
 }
